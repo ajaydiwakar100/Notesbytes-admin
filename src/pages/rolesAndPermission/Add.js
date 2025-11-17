@@ -33,7 +33,7 @@ const AddRole = () => {
           res.data.data.forEach((mod) => {
             // Use module name as key, and extract only permission names
             formattedModules[mod.name] = mod.permissions?.map((p) => ({
-              id: p.id,
+              id: p._id,
               name: p.name
             })) || [];
           });
@@ -118,7 +118,8 @@ const AddRole = () => {
     // Prepare payload for API
     const payload = {
       name: roleName,
-      status,
+      status: !!status,
+       ...(id ? { _id: id } : {}),
       permissionId: permissions.map((p) => {
         return p; // Replace with permission ID if you store it
       }),
@@ -222,22 +223,23 @@ const AddRole = () => {
                         <div className="col-lg-9">
                           <div className="d-flex flex-wrap gap-3">
                             {modules[module].map((perm) => {
-                              const key = `${perm.id}`;
-                              return (
-                                <div key={key} className="form-check form-check-inline">
-                                  <input
-                                    type="checkbox"
-                                    className="form-check-input"
-                                    id={key}
-                                    checked={permissions.includes(perm.id)}
-                                    onChange={() => handlePermissionChange(perm.id)}
-                                  />
-                                  <label className="form-check-label" htmlFor={key}>
-                                    {perm.name}
-                                  </label>
-                                </div>
-                              );
-                            })}
+                            const key = `${module}-${perm.id}`;
+                            return (
+                              <div key={key} className="form-check form-check-inline">
+                                <input
+                                  type="checkbox"
+                                  className="form-check-input"
+                                  id={key}
+                                  checked={permissions.includes(perm.id)}
+                                  onChange={() => handlePermissionChange(perm.id)}
+                                />
+                                <label className="form-check-label" htmlFor={key}>
+                                  {perm.name.charAt(0).toUpperCase() + perm.name.slice(1)}
+                                </label>
+                              </div>
+                            );
+                          })}
+
                           </div>
                         </div>
                       </div>

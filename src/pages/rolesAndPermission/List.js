@@ -24,7 +24,7 @@ const RoleList = () => {
         const res = await axios.get(LIST_ROLE_API, {
           headers: { Authorization: `Bearer ${token}` },
         });
-
+        console.log(res);
         if (res.data.status === "success" && Array.isArray(res.data.data)) {
           setRoles(res.data.data);
           setFilteredRoles(res.data.data);
@@ -126,7 +126,7 @@ const RoleList = () => {
           <input
             type="checkbox"
             checked={role.status} 
-            onChange={() => handleToggleStatus(role.id, role.status)}
+            onChange={() => handleToggleStatus(role._id, role.status)}
           />
           <span className="slider round"></span>
         </label>
@@ -148,16 +148,16 @@ const RoleList = () => {
         render: (role) => (
           <div className="d-flex gap-2">
             {/* Edit icon */}
-            <Link to={`/roles/edit/${role.id}`}>
+            <Link to={`/roles/edit/${role._id}`}>
               <i className="fa fa-edit text-primary" aria-hidden="true"></i>
             </Link>
             &nbsp;&nbsp;&nbsp;
             {/* Info icon */}
-            <i
+            {/* <i
               className="fa fa-info-circle text-primary mt-1"
               style={{ cursor: "pointer" }}
               onClick={() => setSelectedRoleModules(role.modules)}
-            />
+            /> */}
           </div>
         ),
     },

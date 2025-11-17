@@ -3,58 +3,67 @@ import { Link, useNavigate } from "react-router-dom";
 import DataTable from "../../layouts/DataTable";
 import SearchBar from "../../layouts/SearchBar";
 import Pagination from "../../layouts/Pagination";
+import axios from "axios";
+import { LIST_SUB_ADMIN_API,} from "../../config";
 
 const SubAdminList = () => {
   const [users, setUsers] = useState([]);
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
+  const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const usersPerPage = 10;
   const navigate = useNavigate();
 
-  // Simulate API fetch
-  useEffect(() => {
-    const dummyUsers = [
-      {
-        id: "1",
-        name: "Ajay Diwakar",
-        email: "ajay@example.com",
-        phone: "9876543210",
-        role: "Sub Admin",
-        userType: "Seller",
-        status: true,
-        createdAt: "2025-01-10",
-      },
-      {
-        id: "2",
-        name: "Radha Sharma",
-        email: "radha@example.com",
-        phone: "9123456780",
-        role: "Sub Admin",
-        userType: "Buyer",
-        status: false,
-        createdAt: "2025-02-15",
-      },
-      {
-        id: "3",
-        name: "Mohan Patel",
-        email: "mohan@example.com",
-        phone: "9812345678",
-        role: "Sub Admin",
-        userType: "Seller",
-        status: true,
-        createdAt: "2025-03-20",
-      },
-    ];
+  // Format date to DD-MMM-YYYY
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString("en-GB", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    });
+  };
 
-    setTimeout(() => {
-      setUsers(dummyUsers);
-      setFilteredUsers(dummyUsers);
-    }, 500);
+  // Fetch Sub Admin List
+  const fetchSubAdmins = async () => {
+    try {
+      const token = localStorage.getItem("token");
+
+      const response = await axios.get(LIST_SUB_ADMIN_API, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      if (response.data.status === "success") {
+        const apiUsers = response.data.data;
+
+        const formatted = apiUsers.map((u) => ({
+          id: u._id,
+          name: u.name,
+          email: u.email,
+          phone: u.phone || "-",
+          role: u.role || "N/A",
+          userType: u.user_type || "N/A",
+          status: u.status === 1 ? true : false,
+          createdAt: formatDate(u.createdAt),
+        }));
+
+        setUsers(formatted);
+        setFilteredUsers(formatted);
+      }
+    } catch (err) {
+      console.error("Error fetching sub-admins:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchSubAdmins();
   }, []);
 
-  // Toggle status
-  const handleToggleStatus = (userId) => {
+  // Toggle status locally
+  const handleToggleStatus = async (userId) => {
     setUsers((prev) =>
       prev.map((user) =>
         user.id === userId ? { ...user, status: !user.status } : user
@@ -66,10 +75,9 @@ const SubAdminList = () => {
       )
     );
 
-    // TODO: Call API to update status
+    // TODO: API to update status
   };
 
-  // Table columns
   const columns = [
     { header: "Sno", accessor: "index" },
     { header: "Name", accessor: "name" },
@@ -77,6 +85,7 @@ const SubAdminList = () => {
     { header: "Phone", accessor: "phone" },
     { header: "Role", accessor: "role" },
     { header: "User Type", accessor: "userType" },
+
     {
       header: "Status",
       render: (user) => (
@@ -90,20 +99,20 @@ const SubAdminList = () => {
         </label>
       ),
     },
+
     { header: "Created At", accessor: "createdAt" },
+
     {
       header: "Action",
       render: (user) => (
-        <div className="d-flex gap-2">
-          <Link to={`/sub-admins/edit/${user.id}`}>
-            <i className="fa fa-edit text-primary" aria-hidden="true"></i>
-          </Link>
-        </div>
+        <Link to={`/sub-admins/edit/${user.id}`}>
+          <i className="fa fa-edit text-primary"></i>
+        </Link>
       ),
     },
   ];
 
-  // Search handler
+  // Search
   const handleSearchChange = (e) => {
     const query = e.target.value.toLowerCase();
     setSearchQuery(query);
@@ -113,7 +122,8 @@ const SubAdminList = () => {
         user.name.toLowerCase().includes(query) ||
         user.email.toLowerCase().includes(query) ||
         user.phone.toLowerCase().includes(query) ||
-        user.userType.toLowerCase().includes(query)
+        user.userType.toLowerCase().includes(query) ||
+        user.role.toLowerCase().includes(query)
     );
 
     setFilteredUsers(filtered);
@@ -121,14 +131,14 @@ const SubAdminList = () => {
   };
 
   // Pagination
-  const totalPages = Math.ceil(filteredUsers.length / usersPerPage) || 1;
-  const indexOfLastItem = currentPage * usersPerPage;
-  const indexOfFirstItem = indexOfLastItem - usersPerPage;
-  const currentUsers = filteredUsers.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(filteredUsers.length / usersPerPage);
+  const indexOfLast = currentPage * usersPerPage;
+  const indexOfFirst = indexOfLast - usersPerPage;
+  const currentUsers = filteredUsers.slice(indexOfFirst, indexOfLast);
 
-  const handlePageChange = (page) => {
-    if (page >= 1 && page <= totalPages) setCurrentPage(page);
-  };
+  if (loading) {
+    return <div className="text-center p-3">Loading Sub Admins...</div>;
+  }
 
   return (
     <div className="content-wrapper">
@@ -147,29 +157,29 @@ const SubAdminList = () => {
       <section className="content">
         <div className="container-fluid">
           <div className="box-main">
-            <div className="box-main-top d-flex justify-content-between align-items-center">
+
+            <div className="box-main-top d-flex justify-content-between">
               <div className="box-main-title">Sub Admin List</div>
-              <div className="box-main-top-right">
-                <SearchBar
-                  searchQuery={searchQuery}
-                  onSearchChange={handleSearchChange}
-                />
-              </div>
+              <SearchBar
+                searchQuery={searchQuery}
+                onSearchChange={handleSearchChange}
+              />
             </div>
 
             <div className="box-main-table mt-3">
               <DataTable
                 columns={columns}
                 data={currentUsers}
-                startIndex={indexOfFirstItem}
+                startIndex={indexOfFirst}
               />
             </div>
 
             <Pagination
               currentPage={currentPage}
               totalPages={totalPages}
-              onPageChange={handlePageChange}
+              onPageChange={(page) => setCurrentPage(page)}
             />
+
           </div>
         </div>
       </section>

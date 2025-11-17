@@ -27,11 +27,15 @@ export const addGobalSetting    = `${BASE_URL}gobal-settings/add-gobal-settings`
 export const editGobalSetting   = `${BASE_URL}gobal-settings/edit-gobal-settings`;
 export const deleteGobalSetting   = `${BASE_URL}gobal-settings/delete-gobal-settings`;
 
-// fetch Modules With Permission
+// Fetch Modules With Permission
 export const FETCH_ROLES_MODULES_API   = `${BASE_URL}module/list`;
 export const ADD_ROLE_API   = `${BASE_URL}roles/add`;
 export const LIST_ROLE_API  = `${BASE_URL}roles/list`;
 export const GET_ROLE_API   = `${BASE_URL}roles/view`;
 export const CHANGE_STATUS_ROLE_API   = `${BASE_URL}roles/change-status`;
 
-
+// Subadmin  
+export const CREATE_SUB_ADMIN_API   = `${BASE_URL}sub-admin/create`;
+export const LIST_SUB_ADMIN_API   = `${BASE_URL}sub-admin/list`;
+export const VIEW_SUB_ADMIN_API   = `${BASE_URL}sub-admin/view`;
+export const UPDATE_SUB_ADMIN_API   = `${BASE_URL}sub-admin/update`;
