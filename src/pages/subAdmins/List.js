@@ -4,7 +4,10 @@ import DataTable from "../../layouts/DataTable";
 import SearchBar from "../../layouts/SearchBar";
 import Pagination from "../../layouts/Pagination";
 import axios from "axios";
-import { LIST_SUB_ADMIN_API,} from "../../config";
+import {
+  LIST_SUB_ADMIN_API,
+  CHANGE_SUB_ADMIN_STATUS_API,
+} from "../../config";
 
 const SubAdminList = () => {
   const [users, setUsers] = useState([]);
@@ -15,7 +18,6 @@ const SubAdminList = () => {
   const usersPerPage = 10;
   const navigate = useNavigate();
 
-  // Format date to DD-MMM-YYYY
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     return date.toLocaleDateString("en-GB", {
@@ -29,7 +31,6 @@ const SubAdminList = () => {
   const fetchSubAdmins = async () => {
     try {
       const token = localStorage.getItem("token");
-
       const response = await axios.get(LIST_SUB_ADMIN_API, {
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -62,20 +63,45 @@ const SubAdminList = () => {
     fetchSubAdmins();
   }, []);
 
-  // Toggle status locally
+  // Toggle status + API call
   const handleToggleStatus = async (userId) => {
+    const currentUser = users.find((u) => u.id === userId);
+    const newStatus = !currentUser.status;
+
+    // Update UI instantly
     setUsers((prev) =>
       prev.map((user) =>
-        user.id === userId ? { ...user, status: !user.status } : user
+        user.id === userId ? { ...user, status: newStatus } : user
       )
     );
     setFilteredUsers((prev) =>
       prev.map((user) =>
-        user.id === userId ? { ...user, status: !user.status } : user
+        user.id === userId ? { ...user, status: newStatus } : user
       )
     );
 
-    // TODO: API to update status
+    try {
+      const token = localStorage.getItem("token");
+
+      await axios.put(CHANGE_SUB_ADMIN_STATUS_API,
+        { status: newStatus ? 1 : 0, id: userId },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+    } catch (err) {
+      console.error("Status update failed:", err);
+
+      // Rollback UI if API failed
+      setUsers((prev) =>
+        prev.map((user) =>
+          user.id === userId ? { ...user, status: !newStatus } : user
+        )
+      );
+      setFilteredUsers((prev) =>
+        prev.map((user) =>
+          user.id === userId ? { ...user, status: !newStatus } : user
+        )
+      );
+    }
   };
 
   const columns = [
@@ -84,7 +110,22 @@ const SubAdminList = () => {
     { header: "Email", accessor: "email" },
     { header: "Phone", accessor: "phone" },
     { header: "Role", accessor: "role" },
-    { header: "User Type", accessor: "userType" },
+
+    {
+      header: "User Type",
+      accessor: "userType",
+      render: (row) => {
+        let str = row.userType.toLowerCase();
+        str = str.replace("admin", " admin");
+        return str
+          .trim()
+          .split(" ")
+          .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+          .join(" ");
+      },
+    },
+
+  
 
     {
       header: "Status",
@@ -112,7 +153,6 @@ const SubAdminList = () => {
     },
   ];
 
-  // Search
   const handleSearchChange = (e) => {
     const query = e.target.value.toLowerCase();
     setSearchQuery(query);
@@ -130,7 +170,6 @@ const SubAdminList = () => {
     setCurrentPage(1);
   };
 
-  // Pagination
   const totalPages = Math.ceil(filteredUsers.length / usersPerPage);
   const indexOfLast = currentPage * usersPerPage;
   const indexOfFirst = indexOfLast - usersPerPage;
@@ -179,7 +218,6 @@ const SubAdminList = () => {
               totalPages={totalPages}
               onPageChange={(page) => setCurrentPage(page)}
             />
-
           </div>
         </div>
       </section>

@@ -63,12 +63,12 @@ class Sidebar extends Component {
                         <p>Sellers</p>
                       </Link>
                     </li>
-                    <li className="nav-item">
+                    {/* <li className="nav-item">
                       <Link to="/users/refferals"  className={`nav-link ${currentPath === '/users/refferals' ? 'active' : ''}`}>
                          <i className="fas fa-handshake nav-icon"></i>
                         <p>Referrers</p>
                       </Link>
-                    </li>
+                    </li> */}
                   </ul>
                 </li>
 

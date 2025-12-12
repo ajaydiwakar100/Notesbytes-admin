@@ -24,6 +24,8 @@ import SubAdminList from './pages/subAdmins/List'
 import AddSubAdmin from './pages/subAdmins/Add'
 import EmailTemplateList from './pages/emailTemplate/List';
 import EditEmailTemplate from './pages/emailTemplate/Edit';
+import 'bootstrap/dist/css/bootstrap.min.css';
+
 
 function App() {
   

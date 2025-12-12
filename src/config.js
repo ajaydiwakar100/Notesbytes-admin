@@ -39,3 +39,17 @@ export const CREATE_SUB_ADMIN_API   = `${BASE_URL}sub-admin/create`;
 export const LIST_SUB_ADMIN_API   = `${BASE_URL}sub-admin/list`;
 export const VIEW_SUB_ADMIN_API   = `${BASE_URL}sub-admin/view`;
 export const UPDATE_SUB_ADMIN_API   = `${BASE_URL}sub-admin/update`;
+export const CHANGE_SUB_ADMIN_STATUS_API   = `${BASE_URL}sub-admin/change-status`;
+
+// users  
+export const CREATE_USERS_API   = `${BASE_URL}end-users/create`;
+export const LIST_USERS_API   = `${BASE_URL}end-users/list`;
+export const VIEW_USERS_API   = `${BASE_URL}end-users/view`;
+export const CHANGE_USERS_STATUS_API   = `${BASE_URL}end-users/change-status`;
+
+//documents
+export const GET_DOCS_BY_USER_ID   = `${BASE_URL}document/list`;
+export const UPDATE_DOCS_STATUS   = `${BASE_URL}document/change-status`;
+export const APPROVED_REJECTED_STATUS   = `${BASE_URL}document/approved-reject-status`;
+export const GET_DOC_DETAILS   = `${BASE_URL}document/view`;
+
