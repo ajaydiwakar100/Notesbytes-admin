@@ -157,8 +157,8 @@ function UserDetail() {
         const formatted = docs.map((d, index) => ({
           index: index + 1,
           _id: d._id,
-          documentName: d.name,               // just name
-          price: `₹ ${d.prize}`,              // add ₹ sign
+          documentName: d.title,               // just name
+          price: `₹ ${d.price}`,              // add ₹ sign
           fileUrl: d.filePath,                // file URL
           status: d.status, 
           approvalStatus:d.approvalStatus,                  // status toggle
@@ -538,15 +538,15 @@ function UserDetail() {
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", rowGap: "12px", columnGap: "20px" }}>
               <div>
                 <strong>Name</strong>
-                <div>{selectedDoc.name}</div>
+                <div>{selectedDoc.title}</div>
               </div>
-              <div>
+              {/* <div>
                 <strong>Type</strong>
                 <div>{selectedDoc.type}</div>
-              </div>
+              </div> */}
               <div>
                 <strong>Price</strong>
-                <div>₹ {selectedDoc.prize}</div>
+                <div>₹ {selectedDoc.price}</div>
               </div>
 
               <div style={{ gridColumn: "1 / 4" }}>
