@@ -5,8 +5,8 @@ yarn-debug.log*
 yarn-error.log*
 
 # Build output
-build/
-dist/
+#build/
+#dist/
 
 # Local environment files
 .env
@@ -52,4 +52,4 @@ coverage/
 *.orig
 
 #public
-.public/
+#.public/
