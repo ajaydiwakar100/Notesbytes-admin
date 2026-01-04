@@ -24,7 +24,16 @@ import SubAdminList from './pages/subAdmins/List'
 import AddSubAdmin from './pages/subAdmins/Add'
 import EmailTemplateList from './pages/emailTemplate/List';
 import EditEmailTemplate from './pages/emailTemplate/Edit';
+import Home from './pages/pages/Home';
+import AboutUs from './pages/pages/AboutsUs';
+import SellNotes from './pages/pages/SellNotes';
+import TermsConditions from './pages/pages/Terms';
+import Privacy from './pages/pages/Privacy';
+import GlobalSettings from './pages/golbalSettings/GolbalSettings'
 import 'bootstrap/dist/css/bootstrap.min.css';
+import RefundCancellationPolicy from './pages/pages/RefundCancellationPolicy';
+import PurchaseOrderList from './pages/documents/purchaseDocument/List';
+import UploadDocumentList from './pages/documents/UploadedDocument/List';
 
 
 function App() {
@@ -47,14 +56,12 @@ function App() {
             
               <Route path="/users" element={<UserList />} /> 
               <Route path="/users/detail/:id" element={<UserDetail />} /> 
-              <Route path="/users/buyers" element={<UserList />} /> 
-              <Route path="/users/sellers" element={<UserList />} /> 
-              <Route path="/users/refferals" element={<UserList />} /> 
+              <Route path="/users" element={<UserList />} /> 
+              {/* <Route path="/users/sellers" element={<UserList />} /> 
+              <Route path="/users/refferals" element={<UserList />} />  */}
               
-              <Route path="/global-setting" element={<GobalSettingList />} /> 
-              <Route path="/global-setting/add/" element={<AddGlobalSettings />} /> 
-              <Route path="/global-setting/edit/:id" element={<AddGlobalSettings />} /> 
-
+              <Route path="/global-setting" element={<GlobalSettings/>} /> 
+            
               <Route path='/roles' element={<RoleList/>}/>
               <Route path='/roles/add' element={<AddRole/>}/>
               <Route path='/roles/edit/:id' element={<AddRole/>}/>
@@ -65,6 +72,19 @@ function App() {
 
               <Route path='/email-template' element={<EmailTemplateList/>}/>
               <Route path='/email-template/edit/:id' element={<EditEmailTemplate/>} />
+
+              <Route path='/pages/home' element={<Home/>} />
+              <Route path='/pages/about-us' element={<AboutUs/>} />
+              <Route path='/pages/sell-notes' element={<SellNotes/>} />
+              <Route path='/pages/terms-conditions' element={<TermsConditions/>} />
+              <Route path='/pages/privacy-policy' element={<Privacy/>} />
+              <Route path='/pages/refund' element={<RefundCancellationPolicy/>}/>
+
+              <Route path='/documents/purchase-orders' element={<PurchaseOrderList/>}/>
+              <Route path='/documents/upload-documents' element={<UploadDocumentList/>}/>
+              
+              
+              
               
           </Route>
         </Routes>

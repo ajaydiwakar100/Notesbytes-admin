@@ -133,7 +133,7 @@ abbr[title],
 abbr[data-original-title]
 {
     cursor: help;
-            text-decoration: underline;
+            text-decoration: none;
             text-decoration: underline dotted;
 
     border-bottom: 0;
@@ -6557,7 +6557,7 @@ input[type='button'].btn-block
 
 .breadcrumb-item + .breadcrumb-item:hover::before
 {
-    text-decoration: underline;
+    text-decoration: none;
 }
 
 .breadcrumb-item + .breadcrumb-item:hover::before
@@ -17945,7 +17945,7 @@ a.text-darker:focus
     }
     a:not(.btn)
     {
-        text-decoration: underline;
+        text-decoration: none;
     }
     abbr[title]::after
     {
@@ -18213,7 +18213,7 @@ a.text-darker:focus
 }
 .badge-inline + span > a
 {
-    text-decoration: underline;
+    text-decoration: none;
 }
 
 .badge-default
@@ -25454,7 +25454,7 @@ button.section-darker:focus
 
 .text-underline
 {
-    text-decoration: underline;
+    text-decoration: none;
 }
 
 .text-through

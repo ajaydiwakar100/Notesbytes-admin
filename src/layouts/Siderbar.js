@@ -1,113 +1,190 @@
-import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
-import withRouterProps from './WithRouterProps';
+import React, { Component } from "react";
+import { Link } from "react-router-dom";
+import withRouterProps from "./WithRouterProps";
 
 class Sidebar extends Component {
-  state = {
-    usersMenuOpen: false, // Track if submenu is open
-  };
+  constructor(props) {
+    super(props);
 
-  toggleUsersMenu = () => {
-    this.setState((prevState) => ({
-      usersMenuOpen: !prevState.usersMenuOpen,
+    const currentPath = props.location.pathname;
+
+    this.state = {
+      pagesOpen: currentPath.startsWith("/pages"),
+      documentsOpen: currentPath.startsWith("/documents"),
+    };
+  }
+
+  togglePagesMenu = (e) => {
+    e.preventDefault();
+    this.setState((prev) => ({
+      pagesOpen: !prev.pagesOpen,
     }));
   };
+
+  toggleDocumentsMenu = (e) => {
+    e.preventDefault();
+    this.setState((prev) => ({
+      documentsOpen: !prev.documentsOpen,
+    }));
+  };
+
+  componentDidUpdate(prevProps) {
+    const prevPath = prevProps.location.pathname;
+    const currentPath = this.props.location.pathname;
+
+    if (prevPath !== currentPath) {
+      if (currentPath.startsWith("/pages")) {
+        this.setState({ pagesOpen: true });
+      }
+
+      if (currentPath.startsWith("/documents")) {
+        this.setState({ documentsOpen: true });
+      }
+    }
+  }
 
   render() {
     const { location } = this.props;
     const currentPath = location.pathname;
-    const { usersMenuOpen } = this.state;
-
-    // Keep submenu open if current path is inside /users
-    const isUsersPath = currentPath.startsWith('/users');
+    const { pagesOpen, documentsOpen } = this.state;
 
     return (
-      <div>
-        <aside className="main-sidebar sidebar-dark-primary elevation-4">
-          <a href="#" className="brand-link">
-            {/* <img src="/images/logo.png" alt="" className='admin-logo'/> */}
-          </a>
-          <div className="main-navigation">MAIN NAVIGATION</div>
+      <aside className="main-sidebar sidebar-dark-primary elevation-4">
+        <div className="main-navigation">MAIN NAVIGATION</div>
 
-          <div className="sidebar">
-            <nav className="mt-2">
-              <ul className="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+        <div className="sidebar">
+          <nav className="mt-2">
+            <ul
+              className="nav nav-pills nav-sidebar flex-column"
+              role="menu"
+              data-accordion="false"
+            >
+              {/* Dashboard */}
+              <li className="nav-item">
+                <Link
+                  to="/dashboard"
+                  className={`nav-link ${currentPath === "/dashboard" ? "active" : ""}`}
+                >
+                  <i className="nav-icon fas fa-tachometer-alt"></i>
+                  <p>Dashboard</p>
+                </Link>
+              </li>
 
-                 {/* Dashboard */}
-                <li className="nav-item">
-                  <Link to="/dashboard" className={`nav-link ${currentPath === '/dashboard' ? 'active' : ''}`}>
-                    <i className="nav-icon fas fa-tachometer-alt"></i>
-                    <p>Dashboard</p>
-                  </Link>
-                </li>
+              {/* Users */}
+              <li className="nav-item">
+                <Link
+                  to="/users"
+                  className={`nav-link ${currentPath.startsWith("/users") ? "active" : ""}`}
+                >
+                  <i className="nav-icon fas fa-users"></i>
+                  <p>User Management</p>
+                </Link>
+              </li>
 
-                {/* Manage Users with Submenu */}
-                <li className={`nav-item ${usersMenuOpen || isUsersPath ? 'menu-open' : ''}`}>
-                  <a href="#" className={`nav-link ${isUsersPath ? '' : ''}`} onClick={this.toggleUsersMenu}>
-                    <i className="nav-icon fas fa-users"></i>
-                    <p>
-                      Users Management
-                      <i className="right fas fa-angle-left"></i>
-                    </p>
-                  </a>
-                  <ul className="nav nav-treeview" style={{ display: usersMenuOpen || isUsersPath ? 'block' : 'none' }}>
-                    <li className="nav-item">
-                      <Link to="/users/buyers" className={`nav-link ${currentPath === '/users/buyers' ? 'active' : ''}`}>
-                        <i className="fas fa-users nav-icon"></i>
-                        <p>Buyers</p>
+              {/* Roles */}
+              <li className="nav-item">
+                <Link
+                  to="/roles"
+                  className={`nav-link ${currentPath.startsWith("/roles") ? "active" : ""}`}
+                >
+                  <i className="nav-icon fas fa-key"></i>
+                  <p>Roles & Permission</p>
+                </Link>
+              </li>
+
+              {/* Pages */}
+              <li className={`nav-item ${pagesOpen ? "menu-open" : ""}`}>
+                <a
+                  href="#"
+                  className={`nav-link ${pagesOpen ? "active" : ""}`}
+                  onClick={this.togglePagesMenu}
+                >
+                  <i className="nav-icon fas fa-file-alt"></i>
+                  <p>
+                    Pages
+                    <i className={`right fas fa-angle-${pagesOpen ? "down" : "left"}`}></i>
+                  </p>
+                </a>
+
+                <ul className="nav nav-treeview" style={{ display: pagesOpen ? "block" : "none" }}>
+                  {[
+                    { path: "/pages/home", label: "Home Page", icon: "fas fa-home" },
+                    { path: "/pages/about-us", label: "About Us", icon: "fas fa-info-circle" },
+                    { path: "/pages/sell-notes", label: "Sell Notes", icon: "fas fa-file-invoice-dollar" },
+                    { path: "/pages/privacy-policy", label: "Privacy Policy", icon: "fas fa-user-shield" },
+                    { path: "/pages/terms-conditions", label: "Terms & Conditions", icon: "fas fa-file-contract" },
+                    { path: "/pages/refund", label: "Refund & Cancellation", icon: "fas fa-undo" },
+                  ].map((item) => (
+                    <li className="nav-item" key={item.path}>
+                      <Link
+                        to={item.path}
+                        className={`nav-link ${currentPath === item.path ? "active" : ""}`}
+                      >
+                        <i className={`nav-icon ${item.icon}`}></i>
+                        <p>{item.label}</p>
                       </Link>
                     </li>
-                    <li className="nav-item">
-                      <Link to="/users/sellers" className={`nav-link ${currentPath === '/users/sellers' ? 'active' : ''}`}>
-                        <i className="fas fa-user-tie nav-icon"></i>
-                        <p>Sellers</p>
+                  ))}
+                </ul>
+              </li>
+
+              {/* Documents */}
+              <li className={`nav-item ${documentsOpen ? "menu-open" : ""}`}>
+                <a
+                  href="#"
+                  className={`nav-link ${documentsOpen ? "active" : ""}`}
+                  onClick={this.toggleDocumentsMenu}
+                >
+                  <i className="nav-icon fas fa-folder"></i>
+                  <p>
+                    Documents
+                    <i className={`right fas fa-angle-${documentsOpen ? "down" : "left"}`}></i>
+                  </p>
+                </a>
+
+                <ul
+                  className="nav nav-treeview"
+                  style={{ display: documentsOpen ? "block" : "none" }}
+                >
+                  {[
+                    {
+                      path: "/documents/purchase-orders",
+                      label: "Purchase Document",
+                      icon: "fas fa-shopping-cart",
+                    },
+                    {
+                      path: "/documents/upload-documents",
+                      label: "Uploaded Document",
+                      icon: "fas fa-upload",
+                    },
+                  ].map((item) => (
+                    <li className="nav-item" key={item.path}>
+                      <Link
+                        to={item.path}
+                        className={`nav-link ${currentPath === item.path ? "active" : ""}`}
+                      >
+                        <i className={`nav-icon ${item.icon}`}></i>
+                        <p>{item.label}</p>
                       </Link>
                     </li>
-                    {/* <li className="nav-item">
-                      <Link to="/users/refferals"  className={`nav-link ${currentPath === '/users/refferals' ? 'active' : ''}`}>
-                         <i className="fas fa-handshake nav-icon"></i>
-                        <p>Referrers</p>
-                      </Link>
-                    </li> */}
-                  </ul>
-                </li>
+                  ))}
+                </ul>
+              </li>
 
-                {/* Manage Roles and permission */}
-                <li className="nav-item">
-                  <Link to="/roles" className={`nav-link ${currentPath.startsWith('/roles') ? 'active' : ''}`}>
-                    <i className="nav-icon fas fa-key"></i>
-                    <p>Roles & Permission</p>
-                  </Link>
-                </li>
-
-                {/* Manage Sub admin */}
-                <li className="nav-item">
-                  <Link to="/sub-admins" className={`nav-link ${currentPath.startsWith('/sub-admin') ? 'active' : ''}`}>
-                    <i className="nav-icon fas fa-user"></i>
-                    <p>Sub Admins</p>
-                  </Link>
-                </li>
-
-                {/* Manage Email Template */}
-                <li className="nav-item">
-                  <Link to="/email-template" className={`nav-link ${currentPath.startsWith('/email-template') ? 'active' : ''}`}>
-                    <i className="nav-icon fas fa-envelope"></i>
-                    <p>Email Template</p>
-                  </Link>
-                </li>
-
-                {/* Manage Settings */}
-                <li className="nav-item">
-                  <Link to="/global-setting" className={`nav-link ${currentPath.startsWith('/global-setting') ? 'active' : ''}`}>
-                    <i className="nav-icon fas fa-cog"></i>
-                    <p>Golbal Settings</p>
-                  </Link>
-                </li>
-              </ul>
-            </nav>
-          </div>
-        </aside>
-      </div>
+              {/* Settings */}
+              <li className="nav-item">
+                <Link
+                  to="/global-setting"
+                  className={`nav-link ${currentPath.startsWith("/global-setting") ? "active" : ""}`}
+                >
+                  <i className="nav-icon fas fa-cog"></i>
+                  <p>Global Settings</p>
+                </Link>
+              </li>
+            </ul>
+          </nav>
+        </div>
+      </aside>
     );
   }
 }
