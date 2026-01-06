@@ -1,9 +1,9 @@
 // config.js
-const DEV_BASE_URL   = 'http://3.22.121.28/dev/api/admin/';
+const DEV_BASE_URL   = 'https://stage.notesbyte.in/api/admin/';
 const LOCAL_BASE_URL = 'http://localhost:8080/api/admin/';
 
+export const BASE_URL = DEV_BASE_URL;
 //export const BASE_URL = LOCAL_BASE_URL;
-export const BASE_URL = LOCAL_BASE_URL;
 export const LoginAPI = `${BASE_URL}login`;
 export const OTP_VERIFICATION_API = `${BASE_URL}verify-otp`;
 export const PROFILE_UPDATE_API = `${BASE_URL}update-profile`;
