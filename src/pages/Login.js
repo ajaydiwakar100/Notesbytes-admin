@@ -74,7 +74,7 @@ const Login = () => {
             <div className='col-lg-12' style={{ overflow: "hidden" }}> 
                 <div className='row' style={{ margin: '-17px' }}>
                     <div className='col-lg-8'>
-                        <img src="/images/login-banner.jpg" className='h-100 object-fit-cover w-100'/>
+                        <img src="/admin/images/login-banner.jpg" className='h-100 object-fit-cover w-100'/>
                     </div>
                     <div className="auth-bg-gradient card-img-overlay"></div>
                     <div className='col-lg-4'>

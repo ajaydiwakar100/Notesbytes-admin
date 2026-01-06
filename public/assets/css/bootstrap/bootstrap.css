@@ -115,7 +115,7 @@ abbr[title],
 abbr[data-original-title]
 {
     cursor: help;
-            text-decoration: underline;
+            text-decoration: none;
             text-decoration: underline dotted;
 
     border-bottom: 0;
@@ -205,7 +205,7 @@ a
 }
 a:hover
 {
-    text-decoration: underline;
+    text-decoration: none;
 
     color: #0056b3;
 }
@@ -3798,14 +3798,14 @@ fieldset:disabled a.btn
 }
 .btn-link:hover
 {
-    text-decoration: underline;
+    text-decoration: none;
 
     color: #0056b3;
 }
 .btn-link:focus,
 .btn-link.focus
 {
-    text-decoration: underline;
+    text-decoration: none;
 
     box-shadow: none;
 }
@@ -6029,7 +6029,7 @@ input[type='button'].btn-block
 
 .breadcrumb-item + .breadcrumb-item:hover::before
 {
-    text-decoration: underline;
+    text-decoration: none;
 }
 
 .breadcrumb-item + .breadcrumb-item:hover::before
@@ -12234,7 +12234,7 @@ a.text-dark:focus
     }
     a:not(.btn)
     {
-        text-decoration: underline;
+        text-decoration: none;
     }
     abbr[title]::after
     {

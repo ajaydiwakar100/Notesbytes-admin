@@ -21,8 +21,8 @@ export const getAgentProfileAPI = `${BASE_URL}agents/get-profile`;
 export const updateKycAndVerifiedStatusForAgent = `${BASE_URL}agents/update-kyc-and-verified-status`; 
 
 //GobalSetting Api 
-export const GET_ALL_SETTINGS_API = `${BASE_URL}gobal-settings/get-gobal-settings-list`;
-export const SAVE_SETTING_API    = `${BASE_URL}gobal-settings/add-gobal-settings`;
+export const GET_ALL_SETTINGS_API = `${BASE_URL}gobal-settings/list`;
+export const SAVE_SETTING_API    = `${BASE_URL}gobal-settings/create`;
 export const addGobalSetting    = `${BASE_URL}gobal-settings/add-gobal-settings`;
 export const editGobalSetting   = `${BASE_URL}gobal-settings/edit-gobal-settings`;
 export const deleteGobalSetting   = `${BASE_URL}gobal-settings/delete-gobal-settings`;
@@ -46,10 +46,17 @@ export const CREATE_USERS_API   = `${BASE_URL}end-users/create`;
 export const LIST_USERS_API   = `${BASE_URL}end-users/list`;
 export const VIEW_USERS_API   = `${BASE_URL}end-users/view`;
 export const CHANGE_USERS_STATUS_API   = `${BASE_URL}end-users/change-status`;
+export const GET_PURCHASE_ORDERS_BY_USER_ID = `${BASE_URL}end-users/get-purchase-order`;
+export const GET_INVOICE_BY_USER = `${BASE_URL}end-users/invoice`;
 
 //documents
 export const GET_DOCS_BY_USER_ID   = `${BASE_URL}document/list`;
 export const UPDATE_DOCS_STATUS   = `${BASE_URL}document/change-status`;
 export const APPROVED_REJECTED_STATUS   = `${BASE_URL}document/approved-reject-status`;
 export const GET_DOC_DETAILS   = `${BASE_URL}document/view`;
+export const GET_SETTINGS     =`${BASE_URL}settings/list`;
+
+export const LIST_PURCHASE_ORDERS_API = `${BASE_URL}end-users/get-purchase-order`;
+
+
 

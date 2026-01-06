@@ -3,7 +3,7 @@
 }
 
 .fc.fc-bootstrap a[data-goto]:hover {
-  text-decoration: underline;
+  text-decoration: none;
 }
 
 .fc-bootstrap hr.fc-divider {

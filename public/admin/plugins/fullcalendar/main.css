@@ -136,7 +136,7 @@ a[data-goto] {
 }
 
 a[data-goto]:hover {
-  text-decoration: underline;
+  text-decoration: none;
 }
 
 /* Fake Table Rows
@@ -506,7 +506,7 @@ a.fc-more {
 }
 
 a.fc-more:hover {
-  text-decoration: underline;
+  text-decoration: none;
 }
 
 .fc-limited {
