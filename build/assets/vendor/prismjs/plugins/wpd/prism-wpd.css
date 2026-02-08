@@ -7,5 +7,5 @@ pre[class*="language-"] a[href] {
 code[class*="language-"] a[href]:hover,
 pre[class*="language-"] a[href]:hover {
 	cursor: help;
-	text-decoration: underline;
+	text-decoration: none;
 }

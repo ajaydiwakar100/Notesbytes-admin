@@ -699,6 +699,9 @@ input:checked + .slider:before {
     margin: 20px 0 0;
     color:black !important;
 }
+a:hover {
+  text-decoration: none !important;
+}
 @media only screen and (max-width: 767px){
     .box-serch-field{
         width: 100%;
