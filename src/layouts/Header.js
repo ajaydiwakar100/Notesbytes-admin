@@ -20,25 +20,19 @@ const Header = () => {
 
     const initials = getInitials(userName); // e.g., "SA"
 
-    const handleLogout = async () => {
-        try {
-            const token = localStorage.getItem("token");
-            await axios.post(LOGOUT_API, {}, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
+    const handleLogout = () => {
+        // Clear all stored data
+        localStorage.clear();
+        sessionStorage.clear();
 
-            // Clear local storage
-            localStorage.setItem("isAuthenticated", "false");
-            localStorage.removeItem("token");
-            localStorage.removeItem("profile");
+        // Remove axios auth header if set
+        delete axios.defaults.headers.common["Authorization"];
+        toast.success("Logout successful");
 
-            toast.success("Logout successful");
-            navigate("/login");
-        } catch (err) {
-            console.error(err);
-            toast.error("Logout failed");
-        }
+        // Redirect & prevent back navigation
+        window.location.href = "/login";
     };
+
 
     return (
         <div>

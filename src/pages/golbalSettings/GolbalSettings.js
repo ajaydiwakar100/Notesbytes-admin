@@ -23,6 +23,8 @@ const GlobalSettings = () => {
   const [subjects, setSubjects] = useState([{ name: "" }]);
   const [exams, setExams] = useState([{ name: "" }]);
   const [notesLanguages, setNotesLanguages] = useState([{ name: "" }]);
+  const [blogCategories, setBlogCategories] = useState([{ name: "" }]);
+
 
   /* ------------------ LOAD DATA ------------------ */
 
@@ -52,6 +54,10 @@ const GlobalSettings = () => {
         footerText: content.footerText ?? "",
         email: content.email ?? "",
         phone: content.phone ?? "",
+        refferalCommission: content.refferalCommission?? "",
+        commission: content.commission?? "",
+        minRefferalAmt: content.minRefferalAmt?? "",
+        minCommisionAmt: content.minCommisionAmt?? "",
       });
 
       setSocialLinks(
@@ -75,6 +81,12 @@ const GlobalSettings = () => {
       setNotesLanguages(
         Array.isArray(content.notesLanguages) && content.notesLanguages.length
           ? content.notesLanguages
+          : [{ name: "" }]
+      );
+
+      setBlogCategories(
+        Array.isArray(content.blogCategories) && content.blogCategories.length
+          ? content.blogCategories
           : [{ name: "" }]
       );
     } catch (err) {
@@ -112,6 +124,7 @@ const GlobalSettings = () => {
       subjects,
       exams,
       notesLanguages,
+      blogCategories
     };
 
     try {
@@ -159,7 +172,11 @@ const GlobalSettings = () => {
               <Input label="App Name" name="appName" value={settingsData.appName} onChange={handleChange} />
               <Input label="App Logo URL" name="appLogo" value={settingsData.appLogo} onChange={handleChange} />
               <Textarea label="Footer Text" name="footerText" value={settingsData.footerText} onChange={handleChange} />
-                 <Input label="Commission (%)" name="commission" type="number" value={settingsData.commission} onChange={handleChange} />
+              <Input label="Commission (%)" name="commission" type="number" value={settingsData.commission} onChange={handleChange} />
+              <Input label="Referal Commission (%)" name="refferalCommission" type="number" value={settingsData.refferalCommission} onChange={handleChange} />
+              <Input label="Minimum Commission Amount (₹)" name="minCommisionAmt" type="number" value={settingsData.minCommisionAmt} onChange={handleChange} />
+              <Input label="Minimum Referal Amount (₹)" name="minRefferalAmt" type="number" value={settingsData.minRefferalAmt} onChange={handleChange} />
+              
             </Section>
 
             {/* CONTACT INFO */}
@@ -211,6 +228,28 @@ const GlobalSettings = () => {
                 </Card>
               ))}
               <AddBtn label="Add Language" onClick={() => addItem(setNotesLanguages)} />
+            </Section>
+
+            {/* BLOG CATEGORIES */}
+            <Section title="Blog Categories">
+              {blogCategories.map((b, i) => (
+                <Card key={i} title={`Category ${i + 1}`}>
+                  <Input
+                    label="Name"
+                    value={b.name}
+                    onChange={(e) =>
+                      handleArrayChange(blogCategories, setBlogCategories, i, "name", e.target.value)
+                    }
+                  />
+                  {blogCategories.length > 1 && (
+                    <RemoveBtn onClick={() => removeItem(setBlogCategories, i)} />
+                  )}
+                </Card>
+              ))}
+              <AddBtn
+                label="Add Blog Category"
+                onClick={() => addItem(setBlogCategories)}
+              />
             </Section>
 
             {/* ACTIONS */}
