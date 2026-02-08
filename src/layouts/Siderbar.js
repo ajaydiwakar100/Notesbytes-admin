@@ -171,6 +171,27 @@ class Sidebar extends Component {
                 </ul>
               </li>
 
+               {/* blogs" */}
+              <li className="nav-item">
+                <Link
+                  to="/blogs"
+                  className={`nav-link ${currentPath.startsWith("/blog") ? "active" : ""}`}
+                >
+                  <i className="nav-icon fas fa-blog"></i>
+                  <p>Blogs</p>
+                </Link>
+              </li>
+
+               {/* subdmin" */}
+              <li className="nav-item">
+                <Link
+                  to="/sub-admins"
+                  className={`nav-link ${currentPath.startsWith("/sub-admins") ? "active" : ""}`}
+                >
+                  <i className="nav-icon fas fa-user"></i>
+                  <p>Sub Admin</p>
+                </Link>
+              </li>
               {/* Settings */}
               <li className="nav-item">
                 <Link

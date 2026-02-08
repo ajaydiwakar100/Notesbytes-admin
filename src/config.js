@@ -58,5 +58,14 @@ export const GET_SETTINGS     =`${BASE_URL}settings/list`;
 
 export const LIST_PURCHASE_ORDERS_API = `${BASE_URL}end-users/get-purchase-order`;
 
+// Blog post apis
+export const LIST_BLOG_API = `${BASE_URL}blog/list`;
+export const CHANGE_BLOG_STATUS_API = `${BASE_URL}blog/status`;
+export const LIST_BLOG_CATEGORY_API = `${BASE_URL}gobal-settings/list`;
+export const CREATE_BLOG_API = `${BASE_URL}blog/create`;
+export const VIEW_BLOG_API = `${BASE_URL}blog/view`;
+export const UPDATE_BLOG_API = `${BASE_URL}blog/update`;
+
+
 
 

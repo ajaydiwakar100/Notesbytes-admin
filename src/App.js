@@ -34,6 +34,9 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import RefundCancellationPolicy from './pages/pages/RefundCancellationPolicy';
 import PurchaseOrderList from './pages/documents/purchaseDocument/List';
 import UploadDocumentList from './pages/documents/UploadedDocument/List';
+import BlogList from './pages/blogs/List';
+import BlogAdd from './pages/blogs/Add';
+
 
 
 function App() {
@@ -82,10 +85,11 @@ function App() {
 
               <Route path='/documents/purchase-orders' element={<PurchaseOrderList/>}/>
               <Route path='/documents/upload-documents' element={<UploadDocumentList/>}/>
-              
-              
-              
-              
+
+              <Route path='/blogs' element={<BlogList/>}/>
+              <Route path='/blogs/add' element={<BlogAdd/>}/>
+              <Route path='/blogs/edit/:id' element={<BlogAdd/>}/>
+        
           </Route>
         </Routes>
       </Router>
