@@ -46,7 +46,7 @@ function App() {
  
   return (
     <div className="wrapper">
-      <Router>
+      <Router basename="/admin">
         <ToastContainer />
         <Routes>
           <Route path="/login" element={(isAuthenticated === 'true') ? <Navigate to="/dashboard" /> : <Login />} />
