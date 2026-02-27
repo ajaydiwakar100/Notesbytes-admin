@@ -36,6 +36,8 @@ import PurchaseOrderList from './pages/documents/purchaseDocument/List';
 import UploadDocumentList from './pages/documents/UploadedDocument/List';
 import BlogList from './pages/blogs/List';
 import BlogAdd from './pages/blogs/Add';
+import ForgetPassword from './pages/ForgetPassword';
+import ResetPassword from './pages/ResetPassword';
 
 
 
@@ -51,7 +53,9 @@ function App() {
         <Routes>
           <Route path="/login" element={(isAuthenticated === 'true') ? <Navigate to="/dashboard" /> : <Login />} />
           <Route path="/verification-code" element={(isAuthenticated === 'true') ? <Navigate to="/otp" /> : <OTP />} />
-          
+          <Route path="/forgot-password"  element={(isAuthenticated === 'true') ? <Navigate to="/forgot-password" /> : <ForgetPassword />} />
+          <Route path="/reset-password"  element={(isAuthenticated === 'true') ? <Navigate to="/reset-password" /> : <ResetPassword />} />
+
           <Route path="/" element={<DashboardLayout  isAuthenticated={isAuthenticated} />}>
               <Route path="/dashboard" element={<Dashboard />} /> 
               <Route path="/profile" element={<Profile />} /> 
@@ -59,7 +63,6 @@ function App() {
             
               <Route path="/users" element={<UserList />} /> 
               <Route path="/users/detail/:id" element={<UserDetail />} /> 
-              <Route path="/users" element={<UserList />} /> 
               {/* <Route path="/users/sellers" element={<UserList />} /> 
               <Route path="/users/refferals" element={<UserList />} />  */}
               
@@ -89,6 +92,8 @@ function App() {
               <Route path='/blogs' element={<BlogList/>}/>
               <Route path='/blogs/add' element={<BlogAdd/>}/>
               <Route path='/blogs/edit/:id' element={<BlogAdd/>}/>
+
+              
         
           </Route>
         </Routes>

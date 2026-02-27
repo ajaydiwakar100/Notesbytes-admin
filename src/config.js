@@ -1,9 +1,10 @@
 // config.js
 const DEV_BASE_URL   = 'https://stage.notesbyte.in/api/admin/';
 const LOCAL_BASE_URL = 'http://localhost:8080/api/admin/';
+const PROD_BASE_URL  = 'https://notesbyte.in/api/admin/';
 
-export const BASE_URL = DEV_BASE_URL;
-//export const BASE_URL = LOCAL_BASE_URL;
+//export const BASE_URL = DEV_BASE_URL;
+export const BASE_URL = LOCAL_BASE_URL;
 export const LoginAPI = `${BASE_URL}login`;
 export const OTP_VERIFICATION_API = `${BASE_URL}verify-otp`;
 export const PROFILE_UPDATE_API = `${BASE_URL}update-profile`;
@@ -66,6 +67,9 @@ export const CREATE_BLOG_API = `${BASE_URL}blog/create`;
 export const VIEW_BLOG_API = `${BASE_URL}blog/view`;
 export const UPDATE_BLOG_API = `${BASE_URL}blog/update`;
 
+export const DASHBOARD_API = `${BASE_URL}/dashboard`;
+export const FORGOT_PASSWORD_API = `${BASE_URL}/forgot-password`;
+export const RESET_PASSWORD_API = `${BASE_URL}/reset-password`;
 
 
 

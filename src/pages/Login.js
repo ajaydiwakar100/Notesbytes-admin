@@ -6,6 +6,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { LoginAPI } from '../config';
 import Loader from "../layouts/Loader";
 import { margin } from '@mui/system';
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 
 const Login = () => {
@@ -14,7 +15,8 @@ const Login = () => {
     const [loading, setLoading] = useState(false);
     const [rememberMe, setRememberMe] = useState(false);
     const navigate = useNavigate();
-    
+    const [showPassword, setShowPassword] = useState(false);
+
     const handleChange = (event) => {
         const { name, value, type, checked } = event.target;
 
@@ -38,6 +40,7 @@ const Login = () => {
         setLoading(true);
 
         try {
+            setPassword(e.target.value);
             const { data } = await axios.post(LoginAPI, { email, password });
 
             console.log("Login Response:", data);
@@ -97,19 +100,35 @@ const Login = () => {
                                             autoComplete="username"
                                         />
                                     </div>
-                                    <div className="form-group">
-                                        <label htmlFor="password" className="lableclassName">Password</label>
-                                        <input 
-                                            type="password" 
-                                            name="password" 
-                                            id="password" 
-                                            placeholder="Enter  Password" 
+                                    <div className="form-group position-relative">
+                                        <label htmlFor="password" className="lableclassName">
+                                            Password
+                                        </label>
+
+                                        <input
+                                            type={showPassword ? "text" : "password"}
+                                            name="password"
+                                            id="password"
+                                            placeholder="Enter Password"
                                             className="form-control"
                                             value={password}
                                             onChange={handleChange}
-                                            autoComplete="current-password" 
+                                            autoComplete="current-password"
                                         />
-                                    </div>
+
+                                        <span
+                                            onClick={() => setShowPassword(!showPassword)}
+                                            style={{
+                                            position: "absolute",
+                                            right: "15px",
+                                            top: "38px",
+                                            cursor: "pointer",
+                                            color: "#6c757d",
+                                            }}
+                                        >
+                                            {showPassword ? <FaEyeSlash /> : <FaEye />}
+                                        </span>
+                                        </div>
                                    
                                     <div className="row " style={{ marginTop: '30px' }}>
                                         <div className="col-lg-6">
@@ -117,7 +136,7 @@ const Login = () => {
                                         </div>
                                         <div className="col-lg-6">
                                             <p className="forgot-link">
-                                            <a href="">Forgot Password?</a>
+                                            <a href="/forgot-password">Forgot Password?</a>
                                             </p>
                                         </div>
                                     </div>
