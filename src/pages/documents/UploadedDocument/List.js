@@ -20,6 +20,7 @@ const UploadDocumentList = () => {
   const [filteredDocs, setFilteredDocs] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(true);
+  const [actionLoading, setActionLoading] = useState(false);
 
   const [currentPage, setCurrentPage] = useState(1);
   const docsPerPage = 10;
@@ -248,6 +249,8 @@ const UploadDocumentList = () => {
     }
 
     try {
+       setActionLoading(true);
+
       const response = await axios.put(
         APPROVED_REJECTED_STATUS,
         { id: docToReject, approvalStatus: "rejected", reason: rejectReason },
@@ -262,12 +265,14 @@ const UploadDocumentList = () => {
       console.error("Error rejecting document:", err);
       toast.error("Failed to reject document");
     } finally {
+       setActionLoading(false);
       setShowRejectModal(false);
     }
   };
 
   const handleApproveConfirm = async () => {
     try {
+      setActionLoading(true);
       const response = await axios.put(
         APPROVED_REJECTED_STATUS,
         { id: docToApprove, approvalStatus: "approved", reason: null },
@@ -282,6 +287,7 @@ const UploadDocumentList = () => {
       console.error("Error approving document:", err);
       toast.error("Failed to approve document");
     } finally {
+        setActionLoading(false);
       setShowApproveModal(false);
     }
   };
@@ -560,8 +566,12 @@ const UploadDocumentList = () => {
             <Button variant="secondary" onClick={() => setShowRejectModal(false)}>
                 Cancel
             </Button>
-            <Button variant="danger" onClick={handleRejectConfirm}>
-                Reject
+           <Button
+              variant="danger"
+              onClick={handleRejectConfirm}
+              disabled={actionLoading}
+            >
+              {actionLoading ? "Rejecting..." : "Reject"}
             </Button>
             </Modal.Footer>
         </Modal>
@@ -579,8 +589,12 @@ const UploadDocumentList = () => {
             <Button variant="secondary" onClick={() => setShowApproveModal(false)}>
                 Cancel
             </Button>
-            <Button variant="success" onClick={handleApproveConfirm}>
-                Yes, Approve
+            <Button
+              variant="success"
+              onClick={handleApproveConfirm}
+              disabled={actionLoading}
+            >
+              {actionLoading ? "Approving..." : "Yes, Approve"}
             </Button>
             </Modal.Footer>
         </Modal>
