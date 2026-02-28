@@ -46,7 +46,7 @@ const Dashboard = () => {
 
             {/* Total Users */}
             <div className="col-lg-3 col-6">
-                <a href="/users" style={{ textDecoration: "none" }}>
+                <a href="/admin/users" style={{ textDecoration: "none" }}>
                 <div className="small-box bg-orange">
                     <div className="inner">
                     <p>Users</p>
@@ -66,7 +66,7 @@ const Dashboard = () => {
 
             {/* Purchased Documents */}
             <div className="col-lg-3 col-6">
-                <a href="/documents/purchase-orders" style={{ textDecoration: "none" }}>
+                <a href="/admin/documents/purchase-orders" style={{ textDecoration: "none" }}>
                 <div className="small-box bg-blue">
                     <div className="inner">
                     <p>Purchased Documents</p>
@@ -86,7 +86,7 @@ const Dashboard = () => {
 
             {/* Pending Documents */}
             <div className="col-lg-3 col-6">
-                <a href="/documents/upload-documents" style={{ textDecoration: "none" }}>
+                <a href="/admin/documents/upload-documents" style={{ textDecoration: "none" }}>
                 <div className="small-box bg-red">
                     <div className="inner">
                     <p>Pending Documents</p>
@@ -106,7 +106,7 @@ const Dashboard = () => {
 
             {/* Approved Documents */}
             <div className="col-lg-3 col-6">
-                <a href="/documents/upload-documents" style={{ textDecoration: "none" }}>
+                <a href="/admin/documents/upload-documents" style={{ textDecoration: "none" }}>
                 <div className="small-box bg-green">
                     <div className="inner">
                     <p>Approved Documents</p>
