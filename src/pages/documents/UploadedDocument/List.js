@@ -67,7 +67,7 @@ const UploadDocumentList = () => {
         const formatted = docs.map((d) => ({
           _id: d._id,
           documentName: d.title,
-          price: `₹ ${d.price}`,
+          price: `₹ ${d.finalPrice}`,
           fileUrl: d.filePath,
           status: d.status,
           approvalStatus: d.approvalStatus,
@@ -124,7 +124,12 @@ const UploadDocumentList = () => {
       render: (_, index) => indexOfFirst + index + 1, // ✅ AUTO SNO
     },
     { header: "Document Name", accessor: "documentName" },
-    { header: "Price", accessor: "price" },
+    {
+      header: "Price",
+      render: (doc) => {
+        return doc.price;
+      },
+    },
     {
       header: "Status",
       render: (doc) => (
@@ -370,7 +375,7 @@ const UploadDocumentList = () => {
                 {/* PRICE */}
                 <div>
                     <strong>Price</strong>
-                    <div>₹ {selectedDoc.price}</div>
+                    <div>₹ {selectedDoc.finalPrice}</div>
                 </div>
     
                 <div>

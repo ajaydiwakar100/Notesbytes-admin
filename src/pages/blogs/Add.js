@@ -8,8 +8,8 @@ import {
   UPDATE_BLOG_API,
 } from "../../config";
 import { toast } from "react-toastify";
-//import ReactQuill from "react-quill";
-//import "react-quill/dist/quill.snow.css";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
 
 const AddBlog = () => {
    const navigate = useNavigate();
@@ -20,12 +20,14 @@ const AddBlog = () => {
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
   const [imagePreview, setImagePreview] = useState(null);
+  const [isHtmlMode, setIsHtmlMode] = useState(false);
 
   const [formData, setFormData] = useState({
     title: "",
     category: "",
     image: null,
     content: "",
+    embed: "",
     status: true,
     author: "",
   });
@@ -88,6 +90,7 @@ const AddBlog = () => {
             content: d.content || "",
             status: d.status === "published" ? true : false,
             author: d.author || "",
+            embed:d.embed || ""
           });
 
           // ✅ show existing image
@@ -148,6 +151,7 @@ const AddBlog = () => {
      Submit
   ----------------------------------*/
   const handleSubmit = async (e) => {
+
     e.preventDefault();
     if (!validateForm()) return;
 
@@ -155,17 +159,22 @@ const AddBlog = () => {
       setLoading(true);
       const token = localStorage.getItem("token");
 
-      const API = id
-        ? `${UPDATE_BLOG_API}/${id}`
-        : CREATE_BLOG_API;
-
+      const API = id ? `${UPDATE_BLOG_API}`: CREATE_BLOG_API;
+     
       const fd = new FormData();
+      if (id) {
+        fd.append("id", id);   // 👈 pass id in body
+      }
       fd.append("title", formData.title);
       fd.append("category", formData.category);
       fd.append("content", formData.content);
       fd.append("status", formData.status ? "published" : "draft");
       fd.append("author", formData.author);
 
+      if(formData.embed){
+        fd.append("embed", formData.embed);
+      }
+      
       if (formData.image) {
         fd.append("image", formData.image);
       }
@@ -279,22 +288,63 @@ const AddBlog = () => {
 
               {/* CONTENT */}
               <div className="mb-3">
-                <label>Content *</label>
+              <label>Content *</label>
+
+              <div style={{ marginBottom: "10px" }}>
+                <button
+                  type="button"
+                  className="btn btn-sm btn-secondary"
+                  onClick={() => setIsHtmlMode(!isHtmlMode)}
+                >
+                  {isHtmlMode ? "Switch to Editor" : "HTML Mode"}
+                </button>
+              </div>
+
+              {isHtmlMode ? (
+                <textarea
+                  className="form-control"
+                  rows="10"
+                  value={formData.content}
+                  onChange={(e) =>
+                    setFormData({ ...formData, content: e.target.value })
+                  }
+                  placeholder="Paste HTML code here..."
+                />
+              ) : (
+                <ReactQuill
+                  theme="snow"
+                  value={formData.content}
+                  onChange={(value) =>
+                    setFormData({ ...formData, content: value })
+                  }
+                  modules={{
+                    toolbar: [
+                      [{ header: [1, 2, false] }],
+                      ["bold", "italic", "underline"],
+                      [{ list: "ordered" }, { list: "bullet" }],
+                      ["link", "image"],
+                      ["clean"],
+                    ],
+                  }}
+                />
+              )}
+
+              {errors.content && (
+                <small className="text-danger">{errors.content}</small>
+              )}
+            </div>
+              <div className="mb-3">
+                <label>Embed HTML (Optional)</label>
 
                 <textarea
-                    name="content"
-                    className="form-control"
-                    rows="8"
-                    value={formData.content}
-                    onChange={handleChange}
-                    placeholder="Write blog content here..."
+                  name="embed"
+                  className="form-control"
+                  rows="4"
+                  placeholder="<iframe src='...'></iframe>"
+                  value={formData.embed}
+                  onChange={handleChange}
                 />
-
-                {errors.content && (
-                    <small className="text-danger">{errors.content}</small>
-                )}
-                </div>
-
+              </div>
               {/* STATUS */}
               <div className="mb-4">
                 <label className="me-3">Status</label>

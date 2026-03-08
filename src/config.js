@@ -3,10 +3,9 @@ const DEV_BASE_URL   = 'https://stage.notesbyte.in/api/admin/';
 const LOCAL_BASE_URL = 'http://localhost:8080/api/admin/';
 const PROD_BASE_URL  = 'https://notesbyte.in/api/admin/';
 
-export const BASE_URL = PROD_BASE_URL;
-//export const BASE_URL = LOCAL_BASE_URL;
+//export const BASE_URL = PROD_BASE_URL;
 //export const BASE_URL = DEV_BASE_URL;
-//export const BASE_URL = LOCAL_BASE_URL;
+export const BASE_URL = LOCAL_BASE_URL;
 
 export const LoginAPI = `${BASE_URL}login`;
 export const OTP_VERIFICATION_API = `${BASE_URL}verify-otp`;
@@ -68,11 +67,14 @@ export const CHANGE_BLOG_STATUS_API = `${BASE_URL}blog/status`;
 export const LIST_BLOG_CATEGORY_API = `${BASE_URL}gobal-settings/list`;
 export const CREATE_BLOG_API = `${BASE_URL}blog/create`;
 export const VIEW_BLOG_API = `${BASE_URL}blog/view`;
-export const UPDATE_BLOG_API = `${BASE_URL}blog/update`;
+export const UPDATE_BLOG_API = `${BASE_URL}blog/create`;
 
 export const DASHBOARD_API = `${BASE_URL}/dashboard`;
 export const FORGOT_PASSWORD_API = `${BASE_URL}/forgot-password`;
 export const RESET_PASSWORD_API = `${BASE_URL}/reset-password`;
 
+export const LIST_REVENUE_API = `${BASE_URL}/get-admin-revenue`;
+export const MARK_REVENUE_PAID_API = `${BASE_URL}/mark-revenue-paid`;
+export const SUMMARY_REPORT_API = `${BASE_URL}/get-summary-report`;
 
-
+export const EMAIL_LIST_API = `${BASE_URL}/email-templates/list`;

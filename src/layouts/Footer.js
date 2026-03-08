@@ -4,7 +4,7 @@ export default class Footer extends Component {
         return (
             <div>
                 <footer className="main-footer">
-                    <a href="#">&copy; Notebytes on Demand, All Rights Reserved.</a>
+                    <a href="#">&copy; NotesByte on Demand, All Rights Reserved.</a>
                 </footer>
             </div>
         )

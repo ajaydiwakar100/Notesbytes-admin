@@ -30,7 +30,7 @@ const Header = () => {
         toast.success("Logout successful");
 
         // Redirect & prevent back navigation
-        window.location.href = "/login";
+        window.location.href = "/admin/login";
     };
 
 

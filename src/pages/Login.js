@@ -84,7 +84,7 @@ const Login = () => {
                         <div className='login-page'>
                             <div className="login-box">
                                 <div className="login-title-box">
-                                    <h4 className="login-title">Welcome to Notebytes    </h4>
+                                    <h4 className="login-title">Welcome to NotesByte    </h4>
                                 </div>
                                 <form onSubmit={handleSubmit}>
                                     <div className="form-group">

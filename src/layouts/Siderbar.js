@@ -11,6 +11,7 @@ class Sidebar extends Component {
     this.state = {
       pagesOpen: currentPath.startsWith("/pages"),
       documentsOpen: currentPath.startsWith("/documents"),
+      revenuesOpen: currentPath.startsWith('/revenues')
     };
   }
 
@@ -28,6 +29,13 @@ class Sidebar extends Component {
     }));
   };
 
+  toggleRevenuesMenu = (e) => {
+    e.preventDefault();
+    this.setState((prev) => ({
+      revenuesOpen: !prev.revenuesOpen,
+    }));
+  };
+
   componentDidUpdate(prevProps) {
     const prevPath = prevProps.location.pathname;
     const currentPath = this.props.location.pathname;
@@ -40,13 +48,19 @@ class Sidebar extends Component {
       if (currentPath.startsWith("/documents")) {
         this.setState({ documentsOpen: true });
       }
+
+      if (currentPath.startsWith("/revenues")) {
+        this.setState({ revenuesOpen: true });
+      }
+
+      
     }
   }
 
   render() {
     const { location } = this.props;
     const currentPath = location.pathname;
-    const { pagesOpen, documentsOpen } = this.state;
+    const { pagesOpen, documentsOpen, revenuesOpen} = this.state;
 
     return (
       <aside className="main-sidebar sidebar-dark-primary elevation-4">
@@ -170,8 +184,52 @@ class Sidebar extends Component {
                   ))}
                 </ul>
               </li>
+              
 
-               {/* blogs" */}
+              {/* Revenues */}
+              <li className={`nav-item ${revenuesOpen ? "menu-open" : ""}`}>
+                <a
+                  href="#"
+                  className={`nav-link ${revenuesOpen ? "active" : ""}`}
+                  onClick={this.toggleRevenuesMenu}
+                >
+                  <i className="nav-icon fas fa-wallet"></i>
+                  <p>
+                    Revenues Info
+                    <i className={`right fas fa-angle-${revenuesOpen ? "down" : "left"}`}></i>
+                  </p>
+                </a>
+
+                <ul
+                  className="nav nav-treeview"
+                  style={{ display: revenuesOpen ? "block" : "none" }}
+                >
+                  {[
+                    {
+                      path: "/revenue/list",
+                      label: "Revenues",
+                      icon: "fas fa-rupee-sign",
+                    },
+                    {
+                      path: "/revenue/summary-report",
+                      label: "Summary Report",
+                      icon: "fas fa-chart-bar",
+                    },
+                  ].map((item) => (
+                    <li className="nav-item" key={item.path}>
+                      <Link
+                        to={item.path}
+                        className={`nav-link ${currentPath === item.path ? "active" : ""}`}
+                      >
+                        <i className={`nav-icon ${item.icon}`}></i>
+                        <p>{item.label}</p>
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </li>
+
+              {/* blogs" */}
               <li className="nav-item">
                 <Link
                   to="/blogs"
@@ -192,6 +250,7 @@ class Sidebar extends Component {
                   <p>Sub Admin</p>
                 </Link>
               </li>
+              
               {/* Settings */}
               <li className="nav-item">
                 <Link

@@ -38,6 +38,8 @@ import BlogList from './pages/blogs/List';
 import BlogAdd from './pages/blogs/Add';
 import ForgetPassword from './pages/ForgetPassword';
 import ResetPassword from './pages/ResetPassword';
+import RevenueList from './pages/revenue/List';
+import SummaryReport from './pages/revenue/SummaryReport';
 
 
 
@@ -92,6 +94,10 @@ function App() {
               <Route path='/blogs' element={<BlogList/>}/>
               <Route path='/blogs/add' element={<BlogAdd/>}/>
               <Route path='/blogs/edit/:id' element={<BlogAdd/>}/>
+              
+              <Route path='/revenue/list'  element={<RevenueList/>}/>
+              <Route path='/revenue/summary-report'  element={<SummaryReport/>}/>
+
 
               
         

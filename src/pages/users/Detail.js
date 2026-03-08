@@ -654,6 +654,55 @@ function UserDetail() {
 
               <div className="row mb-2" style={{ marginTop: "30px" }}>
                 <div className="col-lg-4">
+                  <label>Account HolderName</label>
+                  <br />
+                  <span>{user?.accountHolderName}</span>
+                </div>
+
+                <div className="col-lg-6">
+                  <label>Account Holder Phone Number</label>
+                  <br />
+                  <span>{user?.accountHolderPhoneNumber}</span>
+                </div>
+
+                <div className="col-lg-2">
+                  <label>Account Number</label>
+                  <br />
+                  <span>{user?.accountNumber}</span>
+                </div>
+              </div>
+
+              <div className="row mb-2" style={{ marginTop: "30px" }}>
+                <div className="col-lg-4">
+                  <label>IFSC Code</label>
+                  <br />
+                  <span>{user?.ifscCode}</span>
+                </div>
+
+                <div className="col-lg-6">
+                  <label>UPI ID</label>
+                  <br />
+                  <span>{user?.upiId}</span>
+                </div>
+                
+                <div className="col-lg-2">
+                  <label>Bank Name</label>
+                  <br />
+                  <span>{user?.bankName}</span>
+                </div>
+                
+              </div>
+              
+              <div className="row mb-2" style={{ marginTop: "30px" }}>
+                  <div className="col-lg-2">
+                    <label>Consent Accepted</label>
+                    <br />
+                    <span>{user?.consentAccepted == true ? "Yes" : 'No' }</span>
+                  </div>
+              </div> 
+              
+              <div className="row mb-2" style={{ marginTop: "30px" }}>
+                <div className="col-lg-4">
                   <label>Referral Code</label>
                   <br />
                   <span>{user?.referralCode}</span>
