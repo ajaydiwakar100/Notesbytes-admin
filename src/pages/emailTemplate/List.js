@@ -61,19 +61,19 @@ const EmailTemplateList = () => {
     { header: "Template Name", accessor: "key" },
     { header: "Subject", accessor: "subject" },
 
-    {
-      header: "Status",
-      render: (tpl) => (
-        <label className="switch">
-          <input
-            type="checkbox"
-            checked={tpl.isActive}
-            onChange={() => handleToggleStatus(tpl._id, tpl.status)}
-          />
-          <span className="slider round"></span>
-        </label>
-      ),
-    },
+    // {
+    //   header: "Status",
+    //   render: (tpl) => (
+    //     <label className="switch">
+    //       <input
+    //         type="checkbox"
+    //         checked={tpl.isActive}
+    //         onChange={() => handleToggleStatus(tpl._id, tpl.status)}
+    //       />
+    //       <span className="slider round"></span>
+    //     </label>
+    //   ),
+    // },
 
     {
       header: "Created At",

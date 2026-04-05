@@ -1,67 +1,114 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import axios from "axios";
+import { toast } from "react-toastify";
+import {
+  GET_EMAIL_TEMPLATE_DETAILS,
+  UPDATE_EMAIL_TEMPLATE_API,
+} from "../../config";
 
 const EditEmailTemplate = () => {
   const navigate = useNavigate();
-  const { id } = useParams(); // Get template ID from URL
+  const { id } = useParams();
+
+  const [loading, setLoading] = useState(false);
+  const token = localStorage.getItem("token");
 
   const [formData, setFormData] = useState({
-    name: "",
+    key: "",
     subject: "",
     body: "",
-    status: true,
+    isActive: true,
   });
 
-  // Simulate fetching template data by ID
+  // =========================
+  // Fetch Template Details
+  // =========================
   useEffect(() => {
-    // Replace with API call in real app
-    const fetchTemplate = async () => {
-      const dummyTemplates = [
-        {
-          id: "1",
-          name: "Welcome Email",
-          subject: "Welcome to our platform!",
-          body: "Hello {name}, welcome to our platform.",
-          status: true,
-        },
-        {
-          id: "2",
-          name: "Password Reset",
-          subject: "Reset your password",
-          body: "Click the link to reset your password: {reset_link}",
-          status: false,
-        },
-      ];
-      const template = dummyTemplates.find((tpl) => tpl.id === id);
-      if (template) {
-        setFormData({
-          name: template.name,
-          subject: template.subject,
-          body: template.body,
-          status: template.status,
-        });
-      }
-    };
-    fetchTemplate();
+    fetchTemplateDetails();
   }, [id]);
 
-  const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setFormData({
-      ...formData,
-      [name]: type === "checkbox" ? checked : value,
-    });
+  const fetchTemplateDetails = async () => {
+    try {
+      setLoading(true);
+
+      const res = await axios.get(
+        `${GET_EMAIL_TEMPLATE_DETAILS}/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (res.data.status === "success") {
+        const template = res.data.data;
+
+        setFormData({
+          key: template.key || "",
+          subject: template.subject || "",
+          body: template.body || "",
+          isActive: template.isActive ?? true,
+        });
+      } else {
+        toast.error(res.data.msg);
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to load template details");
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleSubmit = (e) => {
+  // =========================
+  // Handle Input Change
+  // =========================
+  const handleChange = (e) => {
+    const { name, value, type, checked } = e.target;
+
+    setFormData((prev) => ({
+      ...prev,
+      [name]: type === "checkbox" ? checked : value,
+    }));
+  };
+
+  // =========================
+  // Submit Update
+  // =========================
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!formData.name || !formData.subject || !formData.body) {
-      alert("Please fill in all required fields.");
+
+    if (!formData.key || !formData.subject || !formData.body) {
+      toast.error("Please fill all required fields");
       return;
     }
-    console.log(`Template ${id} Updated:`, formData);
-    alert("Template updated successfully (check console)");
-    navigate("/email-templates");
+
+    try {
+      setLoading(true);
+
+      const res = await axios.put(
+        `${UPDATE_EMAIL_TEMPLATE_API}/${id}`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (res.data.status === "success") {
+        toast.success(res.data.msg);
+        navigate("/email-template");
+      } else {
+        toast.error(res.data.msg);
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to update template");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -76,33 +123,34 @@ const EditEmailTemplate = () => {
         <div className="container-fluid">
           <div className="box-main">
             <form onSubmit={handleSubmit}>
-              {/* Template Name */}
-              <div className="row mb-2">
+              {/* Template Key */}
+              <div className="row mb-3">
                 <div className="col-lg-3">
                   <label className="lableClass">
-                    Template Name <span style={{ color: "red" }}>*</span>
+                    Template Key <span style={{ color: "red" }}>*</span>
                   </label>
                 </div>
+
                 <div className="col-lg-6">
                   <input
                     type="text"
-                    name="name"
-                    value={formData.name}
+                    name="key"
+                    value={formData.key}
                     onChange={handleChange}
-                    placeholder="Enter Template Name"
+                    placeholder="Enter Template Key"
                     className="form-control"
-                    style={{ marginTop: "5px" }}
                   />
                 </div>
               </div>
 
               {/* Subject */}
-              <div className="row mb-2">
+              <div className="row mb-3">
                 <div className="col-lg-3">
                   <label className="lableClass">
                     Subject <span style={{ color: "red" }}>*</span>
                   </label>
                 </div>
+
                 <div className="col-lg-6">
                   <input
                     type="text"
@@ -111,18 +159,18 @@ const EditEmailTemplate = () => {
                     onChange={handleChange}
                     placeholder="Enter Subject"
                     className="form-control"
-                    style={{ marginTop: "5px" }}
                   />
                 </div>
               </div>
 
               {/* Body */}
-              <div className="row mb-2">
+              <div className="row mb-3">
                 <div className="col-lg-3">
                   <label className="lableClass">
                     Body <span style={{ color: "red" }}>*</span>
                   </label>
                 </div>
+
                 <div className="col-lg-6">
                   <textarea
                     name="body"
@@ -130,42 +178,49 @@ const EditEmailTemplate = () => {
                     onChange={handleChange}
                     placeholder="Enter email body"
                     className="form-control"
-                    rows={6}
-                    style={{ marginTop: "5px" }}
+                    rows={8}
                   />
                 </div>
               </div>
 
               {/* Status */}
-              <div className="row mb-2">
+              {/* <div className="row mb-3">
                 <div className="col-lg-3">
                   <label className="lableClass">Status</label>
                 </div>
+
                 <div className="col-lg-6">
-                  <label className="switch" style={{ marginTop: "5px" }}>
+                  <label className="switch">
                     <input
                       type="checkbox"
-                      name="status"
-                      checked={formData.status}
+                      name="isActive"
+                      checked={formData.isActive}
                       onChange={handleChange}
                     />
                     <span className="slider round"></span>
                   </label>
                 </div>
-              </div>
+              </div> */}
 
               {/* Buttons */}
-              <div className="row mb-2">
+              <div className="row mb-3">
                 <div className="col-lg-3"></div>
+
                 <div className="col-lg-6 d-flex gap-2">
-                  <button type="submit" className="btn btn-primary">
-                    Update
+                  <button
+                    type="submit"
+                    className="btn btn-primary"
+                    disabled={loading}
+                  >
+                    {loading ? "Updating..." : "Update"}
                   </button>
+
                   &nbsp;&nbsp;
+
                   <button
                     type="button"
                     className="btn btn-secondary"
-                    onClick={() => navigate("/email-templates")}
+                    onClick={() => navigate("/email-template")}
                   >
                     Cancel
                   </button>

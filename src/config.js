@@ -3,9 +3,9 @@ const DEV_BASE_URL   = 'https://stage.notesbyte.in/api/admin/';
 const LOCAL_BASE_URL = 'http://localhost:8080/api/admin/';
 const PROD_BASE_URL  = 'https://notesbyte.in/api/admin/';
 
-//export const BASE_URL = PROD_BASE_URL;
+export const BASE_URL = PROD_BASE_URL;
 //export const BASE_URL = DEV_BASE_URL;
-export const BASE_URL = LOCAL_BASE_URL;
+//export const BASE_URL = LOCAL_BASE_URL;
 
 export const LoginAPI = `${BASE_URL}login`;
 export const OTP_VERIFICATION_API = `${BASE_URL}verify-otp`;
@@ -55,7 +55,9 @@ export const GET_INVOICE_BY_USER = `${BASE_URL}end-users/invoice`;
 //documents
 export const GET_DOCS_BY_USER_ID   = `${BASE_URL}document/list`;
 export const UPDATE_DOCS_STATUS   = `${BASE_URL}document/change-status`;
+export const UPDATE_DOCS_IS_FEATURE_STATUS   = `${BASE_URL}document/change-is-feature-status`;
 export const APPROVED_REJECTED_STATUS   = `${BASE_URL}document/approved-reject-status`;
+export const MAKE_DRAFT_DOC   = `${BASE_URL}document/make-draft-status`;
 export const GET_DOC_DETAILS   = `${BASE_URL}document/view`;
 export const GET_SETTINGS     =`${BASE_URL}settings/list`;
 
@@ -78,3 +80,10 @@ export const MARK_REVENUE_PAID_API = `${BASE_URL}/mark-revenue-paid`;
 export const SUMMARY_REPORT_API = `${BASE_URL}/get-summary-report`;
 
 export const EMAIL_LIST_API = `${BASE_URL}/email-templates/list`;
+export const GET_EMAIL_TEMPLATE_DETAILS = `${BASE_URL}/email-template/details`;
+export const UPDATE_EMAIL_TEMPLATE_API  = `${BASE_URL}/email-template/update`;
+
+export const GET_CONTACT_LIST = `${BASE_URL}/contact-us/get`;
+export const UPDATE_CONTACT_STATUS = `${BASE_URL}/contact-us/update`;
+
+

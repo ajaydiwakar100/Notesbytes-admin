@@ -40,6 +40,7 @@ import ForgetPassword from './pages/ForgetPassword';
 import ResetPassword from './pages/ResetPassword';
 import RevenueList from './pages/revenue/List';
 import SummaryReport from './pages/revenue/SummaryReport';
+import Contact  from './pages/pages/ContactUs';
 
 
 
@@ -97,6 +98,10 @@ function App() {
               
               <Route path='/revenue/list'  element={<RevenueList/>}/>
               <Route path='/revenue/summary-report'  element={<SummaryReport/>}/>
+              
+              <Route path='/pages/contact-us'  element={<Contact/>}/>
+
+
 
 
               

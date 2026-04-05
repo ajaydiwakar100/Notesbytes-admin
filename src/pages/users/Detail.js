@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useParams,useNavigate } from "react-router-dom";
-import { VIEW_USERS_API,GET_DOCS_BY_USER_ID,UPDATE_DOCS_STATUS,APPROVED_REJECTED_STATUS,GET_DOC_DETAILS, GET_PURCHASE_ORDERS_BY_USER_ID, GET_INVOICE_BY_USER, GET_SETTINGS, BASE_URL} from "../../config";
+import {UPDATE_DOCS_IS_FEATURE_STATUS,VIEW_USERS_API,GET_DOCS_BY_USER_ID,UPDATE_DOCS_STATUS,APPROVED_REJECTED_STATUS,GET_DOC_DETAILS, GET_PURCHASE_ORDERS_BY_USER_ID, GET_INVOICE_BY_USER, GET_SETTINGS, BASE_URL} from "../../config";
 import DataTable from "../../layouts/DataTable";
 import SearchBar from "../../layouts/SearchBar";
 import Pagination from "../../layouts/Pagination";
@@ -179,6 +179,7 @@ function UserDetail() {
           price: `₹ ${d.price}`,              // add ₹ sign
           fileUrl: d.filePath,                // file URL
           status: d.status, 
+          isFeature: d.isFeature,
           approvalStatus:d.approvalStatus,                  // status toggle
           createdAt: formatDate(d.createdAt),
         }));
@@ -316,6 +317,30 @@ function UserDetail() {
     }
   };
 
+  const handleToggleFeature = async (id, isFeature) => {
+    try {
+      await axios.put(
+        UPDATE_DOCS_IS_FEATURE_STATUS,
+        {
+          id,
+          isFeature: !isFeature,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      toast.success("Feature status updated successfully");
+      fetchDocuments();
+
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to update feature status");
+    }
+  };
+
   const orderIndexOfLast = orderPage * ordersPerPage;
   const orderIndexOfFirst = orderIndexOfLast - ordersPerPage;
   const currentOrders = filteredOrders.slice(orderIndexOfFirst,orderIndexOfLast);
@@ -396,6 +421,21 @@ function UserDetail() {
             type="checkbox"
             checked={doc.status}
             onChange={() => handleToggleStatus(doc._id,doc.status)}
+          />
+          <span className="slider round"></span>
+        </label>
+      ),
+    },
+    {
+      header: "Is Feature",
+      render: (doc) => (
+        <label className="switch">
+          <input
+            type="checkbox"
+            checked={doc.isFeature}
+            onChange={() =>
+              handleToggleFeature(doc._id, doc.isFeature)
+            }
           />
           <span className="slider round"></span>
         </label>

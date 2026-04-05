@@ -11,16 +11,59 @@ import { toast } from "react-toastify";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 
+/* -----------------------------
+   ReactQuill Toolbar
+------------------------------*/
+const quillModules = {
+  toolbar: [
+    [{ header: [1, 2, 3, 4, 5, 6, false] }],
+    [{ font: [] }],
+    [{ size: ["small", false, "large", "huge"] }],
+    ["bold", "italic", "underline", "strike", "blockquote"],
+    [{ color: [] }, { background: [] }],
+    [{ script: "sub" }, { script: "super" }],
+    [{ list: "ordered" }, { list: "bullet" }],
+    [{ indent: "-1" }, { indent: "+1" }],
+    [{ align: [] }],
+    ["link", "image", "video"],
+    ["clean"],
+  ],
+};
+
+const quillFormats = [
+  "header",
+  "font",
+  "size",
+  "bold",
+  "italic",
+  "underline",
+  "strike",
+  "blockquote",
+  "list",
+  "bullet",
+  "indent",
+  "align",
+  "link",
+  "image",
+  "video",
+  "color",
+  "background",
+  "script",
+];
+
 const AddBlog = () => {
-   const navigate = useNavigate();
+  const navigate = useNavigate();
   const { id } = useParams();
 
   const [categories, setCategories] = useState([]);
   const [loadingCategories, setLoadingCategories] = useState(true);
   const [loading, setLoading] = useState(false);
+  const [showPreview, setShowPreview] = useState(false);
   const [errors, setErrors] = useState({});
   const [imagePreview, setImagePreview] = useState(null);
   const [isHtmlMode, setIsHtmlMode] = useState(false);
+  const [showHtmlPreview, setShowHtmlPreview] = useState(false);
+  const [rawHtmlContent, setRawHtmlContent] = useState("");
 
   const [formData, setFormData] = useState({
     title: "",
@@ -39,6 +82,7 @@ const AddBlog = () => {
     const fetchCategories = async () => {
       try {
         const token = localStorage.getItem("token");
+
         const res = await axios.get(LIST_BLOG_CATEGORY_API, {
           headers: { Authorization: `Bearer ${token}` },
         });
@@ -76,29 +120,43 @@ const AddBlog = () => {
     const fetchBlog = async () => {
       try {
         const token = localStorage.getItem("token");
+
         const res = await axios.get(`${VIEW_BLOG_API}/${id}`, {
-          headers: { Authorization: `Bearer ${token}` },
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         });
 
         if (res.data.status === "success") {
           const d = res.data.data;
 
-          setFormData({
+          console.log("BLOG DATA:", d);
+
+          // force HTML mode in edit
+          setIsHtmlMode(true);
+
+          // store raw html separately
+          setRawHtmlContent(d.content || "");
+
+          // update form properly
+          setFormData((prev) => ({
+            ...prev,
             title: d.title || "",
             category: d.category || "",
             image: null,
             content: d.content || "",
-            status: d.status === "published" ? true : false,
+            status: d.status === "published",
             author: d.author || "",
-            embed:d.embed || ""
-          });
+            embed: d.embed || "",
+          }));
 
-          // ✅ show existing image
+          // image preview
           if (d.image) {
-            setImagePreview(d.image); // full URL from backend
+            setImagePreview(d.image);
           }
         }
-      } catch {
+      } catch (error) {
+        console.error(error);
         toast.error("Failed to load blog");
       }
     };
@@ -138,12 +196,14 @@ const AddBlog = () => {
   ----------------------------------*/
   const validateForm = () => {
     let temp = {};
+
     if (!formData.title.trim()) temp.title = "Title is required";
     if (!formData.category) temp.category = "Category is required";
     if (!formData.content.trim()) temp.content = "Content is required";
     if (!formData.author.trim()) temp.author = "Author is required";
 
     setErrors(temp);
+
     return Object.keys(temp).length === 0;
   };
 
@@ -151,30 +211,33 @@ const AddBlog = () => {
      Submit
   ----------------------------------*/
   const handleSubmit = async (e) => {
-
     e.preventDefault();
+
     if (!validateForm()) return;
 
     try {
       setLoading(true);
+
       const token = localStorage.getItem("token");
 
-      const API = id ? `${UPDATE_BLOG_API}`: CREATE_BLOG_API;
-     
+      const API = id ? UPDATE_BLOG_API : CREATE_BLOG_API;
+
       const fd = new FormData();
+
       if (id) {
-        fd.append("id", id);   // 👈 pass id in body
+        fd.append("id", id);
       }
+
       fd.append("title", formData.title);
       fd.append("category", formData.category);
       fd.append("content", formData.content);
       fd.append("status", formData.status ? "published" : "draft");
       fd.append("author", formData.author);
 
-      if(formData.embed){
+      if (formData.embed) {
         fd.append("embed", formData.embed);
       }
-      
+
       if (formData.image) {
         fd.append("image", formData.image);
       }
@@ -198,10 +261,6 @@ const AddBlog = () => {
     }
   };
 
-
-  /* ----------------------------------
-     UI
-  ----------------------------------*/
   return (
     <div className="content-wrapper" style={{ padding: "10px" }}>
       <div className="content-header">
@@ -212,8 +271,6 @@ const AddBlog = () => {
         <div className="container-fluid">
           <div className="box-main" style={{ padding: "30px" }}>
             <form onSubmit={handleSubmit}>
-
-              {/* TITLE */}
               <div className="mb-3">
                 <label>Title *</label>
                 <input
@@ -223,30 +280,28 @@ const AddBlog = () => {
                   value={formData.title}
                   onChange={handleChange}
                 />
-                {errors.title && <small className="text-danger">{errors.title}</small>}
+                {errors.title && (
+                  <small className="text-danger">{errors.title}</small>
+                )}
               </div>
 
-              {/* CATEGORY */}
               <div className="mb-3">
                 <label>Category *</label>
                 <select
-                    name="category"
-                    className="form-control"
-                    value={formData.category}
-                    onChange={handleChange}
-                    >
-                    <option value="">Select Category</option>
-
-                    {categories.map((c, index) => (
-                        <option key={index} value={c.name}>
-                        {c.name}
-                        </option>
-                    ))}
-                    </select>
-                {errors.category && <small className="text-danger">{errors.category}</small>}
+                  name="category"
+                  className="form-control"
+                  value={formData.category}
+                  onChange={handleChange}
+                >
+                  <option value="">Select Category</option>
+                  {categories.map((c, index) => (
+                    <option key={index} value={c.name}>
+                      {c.name}
+                    </option>
+                  ))}
+                </select>
               </div>
 
-              {/* IMAGE */}
               <div className="mb-3">
                 <label>Blog Image</label>
                 <input
@@ -256,24 +311,19 @@ const AddBlog = () => {
                   onChange={handleChange}
                 />
               </div>
-               {/* IMAGE PREVIEW */}
-                {imagePreview && (
-                    <div style={{ marginTop: "10px" }}>
-                    <img
-                        src={imagePreview}
-                        alt="Preview"
-                        style={{
-                        width: "200px",
-                        height: "auto",
-                        borderRadius: "6px",
-                        border: "1px solid #ddd",
-                        padding: "4px",
-                        }}
-                    />
-                    </div>
-                )}
 
-                {/* AUTHOR */}
+              {imagePreview && (
+                <img
+                  src={imagePreview}
+                  alt="Preview"
+                  style={{
+                    width: "200px",
+                    marginBottom: "20px",
+                    borderRadius: "8px",
+                  }}
+                />
+              )}
+
               <div className="mb-3">
                 <label>Author *</label>
                 <input
@@ -283,71 +333,62 @@ const AddBlog = () => {
                   value={formData.author}
                   onChange={handleChange}
                 />
-                {errors.author && <small className="text-danger">{errors.author}</small>}
               </div>
 
-              {/* CONTENT */}
               <div className="mb-3">
-              <label>Content *</label>
+                <label>Content *</label>
 
-              <div style={{ marginBottom: "10px" }}>
-                <button
-                  type="button"
-                  className="btn btn-sm btn-secondary"
-                  onClick={() => setIsHtmlMode(!isHtmlMode)}
-                >
-                  {isHtmlMode ? "Switch to Editor" : "HTML Mode"}
-                </button>
+                <div style={{ marginBottom: "10px" }}>
+                  <button
+                    type="button"
+                    className="btn btn-sm btn-secondary"
+                    onClick={() => setIsHtmlMode(!isHtmlMode)}
+                  >
+                    {isHtmlMode ? "Switch to Editor" : "HTML Mode"}
+                  </button>
+                </div>
+
+                {isHtmlMode ? (
+                  <textarea
+                    className="form-control"
+                    rows="10"
+                    value={formData.content}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        content: e.target.value,
+                      })
+                    }
+                  />
+                ) : (
+                  <ReactQuill
+                    theme="snow"
+                    value={formData.content}
+                    onChange={(value) =>
+                      setFormData({
+                        ...formData,
+                        content: value,
+                      })
+                    }
+                    modules={quillModules}
+                    formats={quillFormats}
+                  />
+                )}
               </div>
 
-              {isHtmlMode ? (
-                <textarea
-                  className="form-control"
-                  rows="10"
-                  value={formData.content}
-                  onChange={(e) =>
-                    setFormData({ ...formData, content: e.target.value })
-                  }
-                  placeholder="Paste HTML code here..."
-                />
-              ) : (
-                <ReactQuill
-                  theme="snow"
-                  value={formData.content}
-                  onChange={(value) =>
-                    setFormData({ ...formData, content: value })
-                  }
-                  modules={{
-                    toolbar: [
-                      [{ header: [1, 2, false] }],
-                      ["bold", "italic", "underline"],
-                      [{ list: "ordered" }, { list: "bullet" }],
-                      ["link", "image"],
-                      ["clean"],
-                    ],
-                  }}
-                />
-              )}
-
-              {errors.content && (
-                <small className="text-danger">{errors.content}</small>
-              )}
-            </div>
               <div className="mb-3">
-                <label>Embed HTML (Optional)</label>
-
+                <label>Embed HTML</label>
                 <textarea
                   name="embed"
                   className="form-control"
                   rows="4"
-                  placeholder="<iframe src='...'></iframe>"
                   value={formData.embed}
                   onChange={handleChange}
                 />
               </div>
-              {/* STATUS */}
+
               <div className="mb-4">
-                <label className="me-3">Status</label>
+                <label>Status </label>
                 <input
                   type="checkbox"
                   name="status"
@@ -356,20 +397,153 @@ const AddBlog = () => {
                 />
               </div>
 
-              {/* BUTTONS */}
-              <button className="btn btn-primary" disabled={loading}>
-                {loading ? "Saving..." : id ? "Update Blog" : "Publish Blog"}
-              </button>
-              &nbsp;
-              <button
-                type="button"
-                className="btn btn-secondary"
-                onClick={() => navigate("/blogs")}
-              >
-                Cancel
-              </button>
+              <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
+                <button className="btn btn-primary" disabled={loading}>
+                  {loading ? "Saving..." : id ? "Update Blog" : "Publish Blog"}
+                </button>
 
+                <button
+                  type="button"
+                  className="btn btn-info"
+                  onClick={() => setShowPreview(true)}
+                >
+                  Preview
+                </button>
+
+                {id && (
+                  <button
+                    type="button"
+                    className="btn btn-warning"
+                    onClick={() => setShowHtmlPreview(true)}
+                  >
+                    Show HTML
+                  </button>
+                )}
+
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  onClick={() => navigate("/blogs")}
+                >
+                  Cancel
+                </button>
+              </div>
             </form>
+
+            {/* PREVIEW MODAL */}
+            {showPreview && (
+              <div
+                style={{
+                  position: "fixed",
+                  top: 0,
+                  left: 0,
+                  width: "100%",
+                  height: "100%",
+                  background: "rgba(0,0,0,0.6)",
+                  zIndex: 9999,
+                  overflowY: "auto",
+                  padding: "40px",
+                }}
+              >
+                <div
+                  style={{
+                    background: "#fff",
+                    maxWidth: "1000px",
+                    margin: "0 auto",
+                    padding: "30px",
+                    borderRadius: "10px",
+                    position: "relative",
+                  }}
+                >
+                  <button
+                    onClick={() => setShowPreview(false)}
+                    className="btn btn-danger"
+                    style={{
+                      position: "absolute",
+                      right: "20px",
+                      top: "20px",
+                    }}
+                  >
+                    Close
+                  </button>
+
+                  <h2>{formData.title}</h2>
+
+                  <div
+                    className="blog-content"
+                    dangerouslySetInnerHTML={{
+                      __html: formData.content,
+                    }}
+                  />
+
+                  {formData.embed && (
+                    <div
+                      dangerouslySetInnerHTML={{
+                        __html: formData.embed,
+                      }}
+                    />
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* HTML VIEW MODAL */}
+            {showHtmlPreview && (
+              <div
+                style={{
+                  position: "fixed",
+                  top: 0,
+                  left: 0,
+                  width: "100%",
+                  height: "100%",
+                  background: "rgba(0,0,0,0.6)",
+                  zIndex: 10000,
+                  overflowY: "auto",
+                  padding: "40px",
+                }}
+              >
+                <div
+                  style={{
+                    background: "#fff",
+                    maxWidth: "1000px",
+                    margin: "0 auto",
+                    padding: "30px",
+                    borderRadius: "10px",
+                    position: "relative",
+                  }}
+                >
+                  <button
+                    onClick={() => setShowHtmlPreview(false)}
+                    className="btn btn-danger"
+                    style={{
+                      position: "absolute",
+                      right: "20px",
+                      top: "20px",
+                    }}
+                  >
+                    Close
+                  </button>
+
+                  <h2>HTML Content</h2>
+
+                  <textarea
+                    readOnly
+                    value={rawHtmlContent}
+                    style={{
+                      width: "100%",
+                      minHeight: "500px",
+                      marginTop: "20px",
+                      padding: "15px",
+                      fontFamily: "monospace",
+                      fontSize: "14px",
+                      border: "1px solid #ddd",
+                      borderRadius: "8px",
+                      background: "#f8f9fa",
+                    }}
+                  />
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </section>

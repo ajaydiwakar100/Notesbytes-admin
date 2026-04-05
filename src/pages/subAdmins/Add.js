@@ -26,7 +26,7 @@ const AddSubAdmin = () => {
     city: "",
     role: "",
     status: 1,
-    user_type: "Seller",
+    user_type: "subadmin",
   });
 
   // ---------------------------------------------------------------------------
@@ -168,12 +168,15 @@ const AddSubAdmin = () => {
       }
     } catch (err) {
       console.error("Error:", err);
+      const message =
+      err.response?.data?.msg || "Something went wrong!";
 
+  
       if (err.response?.status === 403) {
         localStorage.clear();
         window.location.href = "/login";
       } else {
-        toast.error("Something went wrong!");
+        toast.error(message);
       }
     } finally {
       setLoading(false);
@@ -261,7 +264,7 @@ const AddSubAdmin = () => {
               </div>
 
               {/* USER TYPE */}
-              <div className="row mb-2">
+              {/* <div className="row mb-2">
                 <div className="col-lg-3">
                   <label className="lableClass">User Type</label>
                 </div>
@@ -276,7 +279,7 @@ const AddSubAdmin = () => {
                     <option value="Buyer">Buyer</option>
                   </select>
                 </div>
-              </div>
+              </div> */}
 
               {/* STATUS */}
               <div className="row mb-3">

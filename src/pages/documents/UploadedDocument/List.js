@@ -10,9 +10,11 @@ import { Modal, Button } from "react-bootstrap";
 import {
   GET_DOCS_BY_USER_ID,
   UPDATE_DOCS_STATUS,
+  UPDATE_DOCS_IS_FEATURE_STATUS,
   APPROVED_REJECTED_STATUS,
   GET_DOC_DETAILS,
-  BASE_URL
+  BASE_URL,
+  MAKE_DRAFT_DOC
 } from "../../../config";
 
 const UploadDocumentList = () => {
@@ -70,6 +72,8 @@ const UploadDocumentList = () => {
           price: `₹ ${d.finalPrice}`,
           fileUrl: d.filePath,
           status: d.status,
+          isFeature: d.isFeature,
+          publishStatus:d.publishStatus,
           approvalStatus: d.approvalStatus,
           createdAt: formatDate(d.createdAt),
         }));
@@ -138,6 +142,36 @@ const UploadDocumentList = () => {
             type="checkbox"
             checked={doc.status === 1}
             onChange={() => handleToggleStatus(doc._id, doc.status)}
+          />
+          <span className="slider round"></span>
+        </label>
+      ),
+    },
+    {
+      header: "Is Feature",
+      render: (doc) => (
+        <label className="switch">
+          <input
+            type="checkbox"
+            checked={doc.isFeature}
+            onChange={() =>
+              handleToggleFeature(doc._id, doc.isFeature)
+            }
+          />
+          <span className="slider round"></span>
+        </label>
+      ),
+    },
+    {
+      header: "Draft",
+      render: (doc) => (
+        <label className="switch">
+          <input
+            type="checkbox"
+            checked={!doc.publishStatus}
+            onChange={() =>
+              handleDraftToggle(doc._id, doc.publishStatus)
+            }
           />
           <span className="slider round"></span>
         </label>
@@ -217,24 +251,75 @@ const UploadDocumentList = () => {
     }
   };
 
+  const handleToggleFeature = async (id, isFeature) => {
+    try {
+      await axios.put(
+        UPDATE_DOCS_IS_FEATURE_STATUS,
+        {
+          id,
+          isFeature: !isFeature,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      toast.success("Feature status updated successfully");
+      fetchDocuments();
+
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to update feature status");
+    }
+  };
 
   // View document (can redirect or open modal)
-    const handleView = async (documentId) => {
-        try {
-        const response = await axios.get(`${GET_DOC_DETAILS}/${documentId}`, {
-            headers: { Authorization: `Bearer ${token}` },
-        });
-        if (response.data.status === "success") {
-            setSelectedDoc(response.data.data);
-            setShowModal(true);
-        } else {
-            toast.error("Document not found");
+  const handleView = async (documentId) => {
+      try {
+      const response = await axios.get(`${GET_DOC_DETAILS}/${documentId}`, {
+          headers: { Authorization: `Bearer ${token}` },
+      });
+      if (response.data.status === "success") {
+          setSelectedDoc(response.data.data);
+          setShowModal(true);
+      } else {
+          toast.error("Document not found");
+      }
+      } catch (err) {
+      console.error(err);
+      toast.error("Failed to fetch document details");
+      }
+  };
+
+  const handleDraftToggle = async (id, publishStatus) => {
+    try {
+      await axios.post(
+        MAKE_DRAFT_DOC,
+        {
+          id,
+          publishStatus: !publishStatus,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         }
-        } catch (err) {
-        console.error(err);
-        toast.error("Failed to fetch document details");
-        }
-    };
+      );
+
+      toast.success(
+        !publishStatus
+          ? "Document published"
+          : "Document moved to draft"
+      );
+
+      fetchDocuments();
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to update draft status");
+    }
+  };
 
   const handleRejectClick = (documentId) => {
     setDocToReject(documentId);   // store which document is being rejected
@@ -297,6 +382,34 @@ const UploadDocumentList = () => {
     }
   };
 
+  const handleMakeDraft = async (id) => {
+    try {
+      setActionLoading(true);
+
+      const response = await axios.put(
+        APPROVED_REJECTED_STATUS,
+        {
+          id,
+          publishStatus: false,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.data.status === "success") {
+        toast.success("Document moved to draft");
+        fetchDocuments();
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to move document to draft");
+    } finally {
+      setActionLoading(false);
+    }
+  };
   if (loading) return <div className="p-3 text-center">Loading...</div>;
 
   return (

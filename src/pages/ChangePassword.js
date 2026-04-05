@@ -4,19 +4,24 @@ import Loader from "../layouts/Loader";
 import axios from "axios";
 import { CHANGE_PASSWORD_API } from "../config";
 import { useNavigate } from "react-router-dom";
-
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 const ChangePassword = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
+  // 👁 Show/Hide states
+  const [showOldPassword, setShowOldPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
+
     switch (name) {
       case "oldPassword":
         setOldPassword(value);
@@ -46,13 +51,16 @@ const ChangePassword = () => {
     }
 
     setLoading(true);
+
     try {
       const token = localStorage.getItem("token");
 
       const { data } = await axios.post(
         CHANGE_PASSWORD_API,
         { oldPassword, newPassword },
-        { headers: { Authorization: `Bearer ${token}` } }
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
       );
 
       if (data.status === "success") {
@@ -74,6 +82,7 @@ const ChangePassword = () => {
   return (
     <>
       <Loader loading={loading} />
+
       <div className="content-wrapper">
         <div className="content-header">
           <div className="container-fluid">
@@ -86,11 +95,14 @@ const ChangePassword = () => {
             <div className="box-main">
               <form onSubmit={handleSubmit}>
                 <div style={{ margin: "20px" }}>
+                  
+                  {/* Old Password */}
                   <div className="row mb-3 align-items-center">
-                    <div className="col-lg-6 d-flex align-items-center">
+                    <div className="col-lg-6 d-flex align-items-center position-relative">
                       <label style={{ width: "300px" }}>Old Password</label>
+
                       <input
-                        type="password"
+                        type={showOldPassword ? "text" : "password"}
                         name="oldPassword"
                         className="form-control"
                         value={oldPassword}
@@ -98,14 +110,28 @@ const ChangePassword = () => {
                         placeholder="Enter Old Password"
                         style={{ marginLeft: "10px" }}
                       />
+
+                      <span
+                        onClick={() => setShowOldPassword(!showOldPassword)}
+                        style={{
+                          position: "absolute",
+                          right: "15px",
+                          cursor: "pointer",
+                          color: "#6c757d",
+                        }}
+                      >
+                        {showOldPassword ? <FaEyeSlash /> : <FaEye />}
+                      </span>
                     </div>
                   </div>
 
+                  {/* New Password */}
                   <div className="row mb-3 align-items-center">
-                    <div className="col-lg-6 d-flex align-items-center">
+                    <div className="col-lg-6 d-flex align-items-center position-relative">
                       <label style={{ width: "300px" }}>New Password</label>
+
                       <input
-                        type="password"
+                        type={showNewPassword ? "text" : "password"}
                         name="newPassword"
                         className="form-control"
                         value={newPassword}
@@ -113,14 +139,28 @@ const ChangePassword = () => {
                         placeholder="Enter New Password"
                         style={{ marginLeft: "10px" }}
                       />
+
+                      <span
+                        onClick={() => setShowNewPassword(!showNewPassword)}
+                        style={{
+                          position: "absolute",
+                          right: "15px",
+                          cursor: "pointer",
+                          color: "#6c757d",
+                        }}
+                      >
+                        {showNewPassword ? <FaEyeSlash /> : <FaEye />}
+                      </span>
                     </div>
                   </div>
 
+                  {/* Confirm Password */}
                   <div className="row mb-3 align-items-center">
-                    <div className="col-lg-6 d-flex align-items-center">
+                    <div className="col-lg-6 d-flex align-items-center position-relative">
                       <label style={{ width: "300px" }}>Confirm Password</label>
+
                       <input
-                        type="password"
+                        type={showConfirmPassword ? "text" : "password"}
                         name="confirmPassword"
                         className="form-control"
                         value={confirmPassword}
@@ -128,17 +168,42 @@ const ChangePassword = () => {
                         placeholder="Confirm New Password"
                         style={{ marginLeft: "10px" }}
                       />
+
+                      <span
+                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                        style={{
+                          position: "absolute",
+                          right: "15px",
+                          cursor: "pointer",
+                          color: "#6c757d",
+                        }}
+                      >
+                        {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
+                      </span>
                     </div>
                   </div>
 
+                  {/* Buttons */}
                   <div className="row">
-                    <div className="col-lg-6 d-flex" style={{ marginLeft: "200px", gap: "10px" }}>
-                      <button type="submit" className="btn btn-primary">Submit</button>
-                      <button type="button" className="btn btn-secondary" 
-                       onClick={() => navigate("/dashboard")}>Cancel</button>
+                    <div
+                      className="col-lg-6 d-flex"
+                      style={{ marginLeft: "200px", gap: "10px" }}
+                    >
+                      <button type="submit" className="btn btn-primary">
+                        Submit
+                      </button>
+
+                      <button
+                        type="button"
+                        className="btn btn-secondary"
+                        onClick={() => navigate("/dashboard")}
+                      >
+                        Cancel
+                      </button>
                     </div>
                   </div>
-                </div>  
+
+                </div>
               </form>
             </div>
           </div>

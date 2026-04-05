@@ -128,6 +128,7 @@ class Sidebar extends Component {
                     { path: "/pages/privacy-policy", label: "Privacy Policy", icon: "fas fa-user-shield" },
                     { path: "/pages/terms-conditions", label: "Terms & Conditions", icon: "fas fa-file-contract" },
                     { path: "/pages/refund", label: "Refund & Cancellation", icon: "fas fa-undo" },
+                    { path: "/pages/contact-us", label: "Contact-us", icon: "fas fa-phone" },
                   ].map((item) => (
                     <li className="nav-item" key={item.path}>
                       <Link
@@ -185,7 +186,6 @@ class Sidebar extends Component {
                 </ul>
               </li>
               
-
               {/* Revenues */}
               <li className={`nav-item ${revenuesOpen ? "menu-open" : ""}`}>
                 <a
@@ -248,6 +248,17 @@ class Sidebar extends Component {
                 >
                   <i className="nav-icon fas fa-user"></i>
                   <p>Sub Admin</p>
+                </Link>
+              </li>
+
+              {/* email template" */}
+              <li className="nav-item">
+                <Link
+                  to="/email-template"
+                  className={`nav-link ${currentPath.startsWith("/email-template") ? "active" : ""}`}
+                >
+                  <i className="nav-icon fa fa-envelope"></i>
+                  <p>Email Template</p>
                 </Link>
               </li>
               

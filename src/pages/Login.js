@@ -40,16 +40,21 @@ const Login = () => {
         setLoading(true);
 
         try {
-            setPassword(e.target.value);
+           
             const { data } = await axios.post(LoginAPI, { email, password });
-
-            console.log("Login Response:", data);
 
             if (data.status === "success" && data.code === 200) {
                 toast.success(data.msg || "Login successful!");
-                navigate("/verification-code", {
-                    state: { email },
-                });
+                // Extract token and profile
+                const token = data.data?.auth_token || null;
+                const { password, auth_token, ...profile } = data.data;
+
+                // Save to localStorage
+                localStorage.setItem("token", token);
+                localStorage.setItem("profile", JSON.stringify(profile));
+                localStorage.setItem("isAuthenticated", "true");
+                navigate("/dashboard");
+
             } else {
                 toast.error(data.msg || "Invalid credentials");
             }
@@ -132,7 +137,7 @@ const Login = () => {
                                    
                                     <div className="row " style={{ marginTop: '30px' }}>
                                         <div className="col-lg-6">
-                                            <button type="submit" className="btn btn-primary">Send OTP</button>
+                                            <button type="submit" className="btn btn-primary">Submit</button>
                                         </div>
                                         <div className="col-lg-6">
                                             <p className="forgot-link">
