@@ -3,6 +3,10 @@ const DEV_BASE_URL   = 'https://stage.notesbyte.in/api/admin/';
 const LOCAL_BASE_URL = 'http://localhost:8080/api/admin/';
 const PROD_BASE_URL  = 'https://notesbyte.in/api/admin/';
 
+const PROD_BASE_FRONTED_URL  = 'https://notesbyte.in/';
+const LOCAL_BASE_FRONTED_URL  = 'http://localhost:5173';
+
+
 export const BASE_URL = PROD_BASE_URL;
 //export const BASE_URL = DEV_BASE_URL;
 //export const BASE_URL = LOCAL_BASE_URL;
@@ -85,5 +89,11 @@ export const UPDATE_EMAIL_TEMPLATE_API  = `${BASE_URL}/email-template/update`;
 
 export const GET_CONTACT_LIST = `${BASE_URL}/contact-us/get`;
 export const UPDATE_CONTACT_STATUS = `${BASE_URL}/contact-us/update`;
+
+// Auto login
+export const AUTO_LOGIN_USER = `${BASE_URL}auto-login`;
+
+export const FRONTEND_URL = `${PROD_BASE_FRONTED_URL}`;
+
 
 

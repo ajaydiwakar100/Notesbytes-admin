@@ -62,6 +62,7 @@ const PurchaseOrderList = () => {
           orderId: o.razorpayOrderId || "-",
           buyerName: o.userId?.name || "-",
           buyerEmail: o.userId?.email || "-",
+          buyerId: o.userId?._id || "-",
           amount: o.amount ? `₹${o.amount}` : "-",
           paymentStatus: o.status
             ? o.status.charAt(0).toUpperCase() + o.status.slice(1)
@@ -83,7 +84,7 @@ const PurchaseOrderList = () => {
     /* ---------------- PURCHASE INVOICE ---------------- */
   const handleDownloadInvoice = async (orderId) => {
     try {
-      console.log(orderId);
+     
       const response = await axios.get(`${GET_INVOICE_BY_USER}?orderId=${orderId}`,
         {
           responseType: "blob",
@@ -143,53 +144,92 @@ const PurchaseOrderList = () => {
      Table Columns
   ========================= */
   const columns = [
-    {
-        header: "Sno",
-        render: (_, index) => index + 1,
-    },
-    { header: "Order ID", accessor: "orderId" },
-    { header: "Buyer", accessor: "buyerName" },
-    { header: "Email", accessor: "buyerEmail" },
-    { header: "Amount", accessor: "amount" },
-    {
-        header: "Items",
-        render: (row) => (
-        <ul className="mb-0 ps-3">
-            {row.items.map((item) => (
-            <li key={item._id}>
-                {item.title} (₹{item.price} × {item.quantity})
-            </li>
-            ))}
-        </ul>
-        ),
-    },
-    {
-        header: "Payment Status",
-        render: (row) => (
-        <span
-            className={`badge ${
-            row.paymentStatus === "Completed"
-                ? "badge-success"
-                : "badge-warning"
-            }`}
-        >
-            {row.paymentStatus}
-        </span>
-        ),
-    },
-    { header: "Date", accessor: "createdAt" },
-    {
-        header: "Invoice",
-        render: (row) => (
+  {
+    header: "Sno",
+    className: "text-center",
+    render: (_, index) => index + 1,
+    sortable: true,
+    sortValue: (_, index) => index + 1,
+  },
+  {
+    header: "Order ID",
+    accessor: "orderId",
+    className: "text-center",
+    sortable: true,
+  },
+  {
+    header: "Buyer",
+    accessor: "buyerName",
+    className: "text-center",
+    sortable: true,
+  },
+  {
+    header: "Email",
+    accessor: "buyerEmail",
+    className: "text-center",
+    sortable: true,
+  },
+  {
+    header: "Amount",
+    accessor: "amount",
+    className: "text-center",
+  },
+  {
+    header: "Items",
+    className: "text-center",
+    sortable: true,
+    render: (row) => ( <ul className="mb-0 ps-3"> {row.items.map((item) => ( <li key={item._id}> {item.title} (₹{item.price} × {item.quantity}) </li> ))} </ul> ),
+  },
+  {
+    header: "Payment Status",
+    className: "text-center",
+    sortable: true,
+    render: (row) => (
+      <span
+        className={`badge ${
+          row.paymentStatus === "PAID"
+            ? "badge-success"
+            : "badge-warning"
+        }`}
+      >
+        {row.paymentStatus}
+      </span>
+    ),
+  },
+  {
+    header: "Date",
+    accessor: "createdAt",
+    className: "text-center",
+    sortable: true,
+  },
+  {
+    header: "Invoice",
+    className: "text-center",
+    sortable: true,
+    render: (row) => (
+      <i
+        className="fa fa-file-pdf text-danger"
+        style={{ cursor: "pointer", fontSize: 18 }}
+        title="Download Invoice"
+        onClick={() => handleDownloadInvoice(row.id)}
+      />
+    ),
+  },
+  {
+    header: "Action",
+    className: "text-center",
+    sortable: true,
+    render: (row) => (
+      <Link to={`/users/detail/${row.buyerId}`}>
         <i
-            className="fa fa-file-pdf text-danger"
-            style={{ cursor: "pointer", fontSize: 18 }}
-            title="Download Invoice"
-            onClick={() => handleDownloadInvoice(row.id)}
-        />
-        ),
-    },
-    ];
+          className="fa fa-eye text-success"
+          style={{ cursor: "pointer", fontSize: 18 }}
+          title="View Details"
+        ></i>
+      </Link>
+    ),
+  },
+];
 
 
   if (loading) {

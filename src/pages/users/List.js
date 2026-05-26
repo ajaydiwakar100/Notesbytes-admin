@@ -4,10 +4,13 @@ import DataTable from "../../layouts/DataTable";
 import SearchBar from "../../layouts/SearchBar";
 import Pagination from "../../layouts/Pagination";
 import axios from "axios";
+import { toast } from 'react-toastify';
 
 import {
   LIST_USERS_API,
   CHANGE_USERS_STATUS_API,
+  AUTO_LOGIN_USER,
+  FRONTEND_URL
 } from "../../config";
 
 const UserList = () => {
@@ -157,9 +160,26 @@ const UserList = () => {
     {
       header: "Action",
       render: (user) => (
+       <div className="d-flex justify-content-center gap-3">
+        
+        {/* View User */}
         <Link to={`/users/detail/${user.id}`}>
-          <i className="fa fa-eye text-success"></i>
+          <i
+            className="fa fa-eye text-success"
+            title="View User"
+            style={{ cursor: "pointer", fontSize: 18 }}
+          ></i>
         </Link>
+
+        {/* Auto Login */}
+        <i
+          className="fas fa-sign-in-alt text-success"
+          title="Auto Login"
+          style={{ cursor: "pointer", fontSize: 18 }}
+          onClick={() => handleAutoLogin(user.id)}
+        ></i>
+
+      </div>
       ),
     },
   ];
@@ -182,6 +202,126 @@ const UserList = () => {
     setCurrentPage(1);
   };
 
+
+  const handleAutoLogin = async (userId) => {
+    try {
+      const adminToken = localStorage.getItem("token");
+
+      const res = await axios.post(
+        `${AUTO_LOGIN_USER}/${userId}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${adminToken}`,
+          },
+          withCredentials: true,
+        }
+      );
+
+      if (res.data?.status === "success") {
+
+        const userData = res.data?.data || {};
+
+        const userName =
+          userData?.name || "User";
+
+        // Save user info
+        localStorage.setItem(
+          "userName",
+          userName
+        );
+
+        // Optional if token returned
+        if (userData?.token) {
+          localStorage.setItem(
+            "userToken",
+            userData.token
+          );
+        }
+
+        // ---------------- SYNC GUEST WISHLIST ----------------
+        const guestWishlist = JSON.parse(
+          localStorage.getItem("wishlist") || "[]"
+        );
+
+        if (guestWishlist.length > 0) {
+          await Promise.all(
+            guestWishlist.map((noteId) =>
+              axios.post(
+                `end-user/wishlist/add`,
+                {
+                  documentId: noteId,
+                },
+                {
+                  withCredentials: true,
+                }
+              )
+            )
+          );
+        }
+
+        // ---------------- SYNC GUEST CART ----------------
+        const guestCart = JSON.parse(
+          localStorage.getItem("guestCart") || "[]"
+        );
+
+        if (
+          Array.isArray(guestCart) &&
+          guestCart.length > 0
+        ) {
+          try {
+            await Promise.all(
+              guestCart.map((item) =>
+                axios.post(
+                  `end-user/cart/add`,
+                  {
+                    documentId:
+                      item.id || item._id,
+                  },
+                  {
+                    withCredentials: true,
+                  }
+                )
+              )
+            );
+
+            localStorage.removeItem(
+              "guestCart"
+            );
+
+          } catch (err) {
+            console.error(
+              "Failed to sync guest cart",
+              err
+            );
+          }
+        }
+
+        // Login Context Update
+        // login(res.data);
+
+        toast.success(
+          res.data?.msg ||
+            "Auto login successful"
+        );
+
+        // Open frontend
+        window.open(
+          `${FRONTEND_URL}/dashboard`,
+          "_blank"
+        );
+      }
+
+    } catch (error) {
+      const apiMessage =
+        error?.response?.data?.msg ||
+        error?.response?.data?.message ||
+        error?.message ||
+        "Auto login failed";
+
+      toast.error(apiMessage);
+    }
+  };
   // =========================
   // Pagination
   // =========================
