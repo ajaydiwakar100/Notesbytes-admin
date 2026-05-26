@@ -84,6 +84,7 @@ export const MARK_REVENUE_PAID_API = `${BASE_URL}/mark-revenue-paid`;
 export const SUMMARY_REPORT_API = `${BASE_URL}/get-summary-report`;
 
 export const EMAIL_LIST_API = `${BASE_URL}/email-templates/list`;
+
 export const GET_EMAIL_TEMPLATE_DETAILS = `${BASE_URL}/email-template/details`;
 export const UPDATE_EMAIL_TEMPLATE_API  = `${BASE_URL}/email-template/update`;
 
